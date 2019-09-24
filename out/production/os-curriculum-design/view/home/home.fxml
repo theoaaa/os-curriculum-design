@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.home.HomeController">
+   <children>
+      <BorderPane layoutX="112.0" layoutY="56.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <AnchorPane prefHeight="384.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox layoutX="13.0" layoutY="21.0" prefHeight="100.0" prefWidth="1174.0" spacing="20.0">
+                     <children>
+                        <Button mnemonicParsing="false" text="用户接口">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" text="文件管理">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" text="设备管理">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" text="存储管理">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="processManagementBtn" mnemonicParsing="false" onAction="#openProcessManagement" text="进程管理">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </center>
+         <bottom>
+            <AnchorPane prefHeight="52.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button layoutX="14.0" layoutY="8.0" mnemonicParsing="false" text="关机">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
+               </children>
+            </AnchorPane>
+         </bottom>
+      </BorderPane>
+   </children>
+</AnchorPane>
