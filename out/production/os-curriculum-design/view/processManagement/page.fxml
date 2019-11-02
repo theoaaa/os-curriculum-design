@@ -34,19 +34,28 @@
                               <Insets left="45.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="processId" GridPane.columnIndex="1" />
+                        <Label fx:id="processId" GridPane.columnIndex="1">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
                         <Label prefHeight="26.0" prefWidth="115.0" text="当前执行时令：" GridPane.rowIndex="1">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="implementingCommand" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="implementingCommand" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
                         <Label text="当前执行结果：" GridPane.rowIndex="2">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="implementResolve" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="implementResolve" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
                         <Label text="剩余时间片：" GridPane.rowIndex="3">
                            <font>
                               <Font size="16.0" />
@@ -55,7 +64,10 @@
                               <Insets left="14.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="remainTimePart" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="remainTimePart" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
                      </children>
                   </GridPane>
                </content>
