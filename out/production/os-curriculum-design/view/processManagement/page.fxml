@@ -72,14 +72,14 @@
             </TitledPane>
          </left>
          <center>
-            <TitledPane animated="false" collapsible="false" prefHeight="348.0" prefWidth="224.0" text="就绪队列" BorderPane.alignment="CENTER">
+            <TitledPane animated="false" collapsible="false" prefHeight="348.0" prefWidth="200.0" text="就绪队列" BorderPane.alignment="CENTER">
                <content>
                   <ListView fx:id="readyListView" prefHeight="356.0" prefWidth="200.0" />
                </content>
             </TitledPane>
          </center>
          <right>
-            <TitledPane animated="false" collapsible="false" prefHeight="348.0" prefWidth="224.0" text="阻塞队列" BorderPane.alignment="CENTER">
+            <TitledPane animated="false" collapsible="false" prefHeight="348.0" prefWidth="200.0" text="阻塞队列" BorderPane.alignment="CENTER">
                <content>
                   <ListView fx:id="blockingListView" prefHeight="200.0" prefWidth="200.0" />
                </content>
