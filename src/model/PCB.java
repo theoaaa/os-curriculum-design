@@ -108,6 +108,10 @@ public class PCB {
         return processState;
     }
 
+    public String getIntermediateResult() {
+        return intermediateResult;
+    }
+
     public int getProcessBlockReason() {
         return processBlockReason;
     }
