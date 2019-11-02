@@ -161,6 +161,10 @@ public class CPU {
         });
     }
 
+    public static int getSystemTime() {
+        return systemTime;
+    }
+
     public static ExecutorService getThreadPool() {
         return cachedThreadPool;
     }
