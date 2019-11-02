@@ -1,0 +1,157 @@
+package model;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+public class PCB {
+    //进程状态
+    public static final int BLANK = 0;  //空的PCB
+    public static final int EXECUTING = 1;
+    public static final int READY = 2;
+    public static final int BLOCK = 3;
+    public static final int END = 4;
+
+    //阻塞原因
+    public static final int NOT_BLOCKED = 0;
+    public static final int IO_INTERRUPT = 1;
+
+    //进程队列
+    private static List<PCB> EmptyPCBList = new LinkedList<>();
+    private static List<PCB> ReadyProcessPCBList = new LinkedList<>();
+    private static List<PCB> BlockedProcessPCBList = new LinkedList<>();
+
+    //保存寄存器组数据
+    private Integer registers[] = new Integer[4];
+
+    //PCB属性
+    private String processID;
+    private int restTime;
+    private int processState;
+    private int processBlockReason;
+
+    private List<String> processInstructions;
+    private int currentInstructionIndex;
+    private String intermediateResult;
+
+    //初始化进程队列
+    static {
+        int pcbTotalNumber = 10;
+        while(pcbTotalNumber-->0){
+            EmptyPCBList.add(new PCB());
+        }
+    }
+
+    // constructor
+    private PCB(){}
+
+    public Integer[] readRegister(){
+        return this.registers;
+    }
+
+    public void resetRestTime(){
+        this.restTime = CPU.timeSliceLength;
+    }
+
+    public void initPCBToReady(String processID){
+        this.processID = processID;
+        this.restTime = CPU.timeSliceLength;
+        for(int i = 0; i < 4; ++ i){
+            this.registers[i] = new Integer(0);
+        }
+    }
+
+    public void clearPCBToBlank(){
+        this.restTime = 0;
+        this.processID = "";
+        this.currentInstructionIndex = 0;
+        this.intermediateResult = "";
+        this.processBlockReason = NOT_BLOCKED;
+        this.processState = BLANK;
+        this.processInstructions = null;
+    }
+
+    public void decreaseRestTime() {
+        this.restTime--;
+    }
+
+    public void increaseCurrentInstructionIndex(){
+        currentInstructionIndex++;
+        if(currentInstructionIndex == processInstructions.size())
+            this.processState = END;
+
+    }
+
+    // getter & setter
+    public String getProcessID() {
+        return processID;
+    }
+
+    public Integer getRestTime() {
+        return restTime;
+    }
+
+    public static List<PCB> getEmptyPCBList() {
+        return EmptyPCBList;
+    }
+
+    public static List<PCB> getReadyProcessPCBList() {
+        return ReadyProcessPCBList;
+    }
+
+    public static List<PCB> getBlockedProcessPCBList() {
+        return BlockedProcessPCBList;
+    }
+
+    public int getProcessState() {
+        return processState;
+    }
+
+    public int getProcessBlockReason() {
+        return processBlockReason;
+    }
+
+    public void setProcessState(int processState) {
+        this.processState = processState;
+    }
+
+    public void setProcessBlockReason(int processBlockReason) {
+        this.processBlockReason = processBlockReason;
+    }
+    public String getCurrentInstruction(){
+        return processInstructions.get(currentInstructionIndex);
+    }
+
+    public void setIntermediateResult(String intermediateResult) {
+        this.intermediateResult = intermediateResult;
+    }
+    public boolean isTimeSliceUsedUp(){
+        return restTime==0;
+    }
+    public boolean isProcessEnd(){
+        return processInstructions==null || currentInstructionIndex == processInstructions.size();
+    }
+
+    public List<String> getProcessInstructions() {
+        return processInstructions;
+    }
+
+    public void setProcessInstructions(List<String> processInstructions) {
+        this.processInstructions = processInstructions;
+    }
+
+    @Override
+    public String toString() {
+        return "PCB{" +
+                "register=" + Arrays.toString(registers) +
+                ", processID='" + processID + '\'' +
+                ", restTime=" + restTime +
+                ", processState=" + processState +
+                ", processBlockReason=" + processBlockReason +
+                ", processInstructions=" + processInstructions +
+                ", currentInstructionIndex=" + currentInstructionIndex +
+                ", intermediateResult='" + intermediateResult + '\'' +
+                '}';
+    }
+}
