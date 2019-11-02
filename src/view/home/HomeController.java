@@ -12,12 +12,8 @@ public class HomeController {
 
     @FXML
     private void openProcessManagement() {
-        ProcessManagementWindow window = new ProcessManagementWindow();
+        ProcessManagementWindow window = ProcessManagementWindow.getInstance();
 
-        try {
-            window.start(new Stage());
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
+        window.show();
     }
 }

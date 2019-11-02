@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.processManagement.PageController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.processManagement.ProcessManagementController">
    <children>
       <BorderPane layoutX="131.0" layoutY="52.0" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
@@ -71,14 +72,14 @@
             </TitledPane>
          </left>
          <center>
-            <TitledPane animated="false" collapsible="false" text="就绪队列" BorderPane.alignment="CENTER">
+            <TitledPane animated="false" collapsible="false" prefHeight="348.0" prefWidth="200.0" text="就绪队列" BorderPane.alignment="CENTER">
                <content>
                   <ListView fx:id="readyListView" prefHeight="356.0" prefWidth="200.0" />
                </content>
             </TitledPane>
          </center>
          <right>
-            <TitledPane animated="false" collapsible="false" prefHeight="356.0" prefWidth="202.0" text="阻塞队列" BorderPane.alignment="CENTER">
+            <TitledPane animated="false" collapsible="false" prefHeight="348.0" prefWidth="200.0" text="阻塞队列" BorderPane.alignment="CENTER">
                <content>
                   <ListView fx:id="blockingListView" prefHeight="200.0" prefWidth="200.0" />
                </content>

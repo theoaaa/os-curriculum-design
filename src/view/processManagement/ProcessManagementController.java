@@ -1,11 +1,12 @@
 package view.processManagement;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
-public class PageController {
+public class ProcessManagementController {
     @FXML
     private Label systemTime;
 
@@ -27,9 +28,9 @@ public class PageController {
     @FXML
     private ListView blockingListView;
 
-    private ObservableList<String> readyList;
+    private ObservableList<String> readyList = FXCollections.observableArrayList();
 
-    private ObservableList<String> blockingList;
+    private ObservableList<String> blockingList = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
@@ -45,4 +46,7 @@ public class PageController {
         remainTimePart.setText("2");
     }
 
+    public void updateData(String processId) {
+        readyList.add(processId);
+    }
 }
