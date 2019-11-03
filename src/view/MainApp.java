@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import view.processManagement.ProcessManagementController;
+import view.processManagement.ProcessManagementWindow;
 
 import java.io.IOException;
 
@@ -12,11 +14,12 @@ public class MainApp extends Application {
 
     private Stage primaryStage;
     private AnchorPane rootLayout;
+    private static ProcessManagementController processManagementController;
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("AddressApp");
+        this.primaryStage.setTitle("操作系统");
 
         initRootLayout();
 
@@ -51,5 +54,13 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static ProcessManagementController getProcessManagementController() {
+        return processManagementController;
+    }
+
+    public static void setProcessManagementController(ProcessManagementController processManagementController) {
+        MainApp.processManagementController = processManagementController;
     }
 }
