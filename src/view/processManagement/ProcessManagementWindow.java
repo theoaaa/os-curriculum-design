@@ -15,6 +15,8 @@ public class ProcessManagementWindow extends Application {
 
     private static ProcessManagementWindow instance;
 
+    private static ProcessManagementController controller = null;
+
     private Stage primaryStage; // 窗口 Stage 对象
 
     private Boolean isExisted = false; // 窗口是否已存在
@@ -36,11 +38,11 @@ public class ProcessManagementWindow extends Application {
         FXMLLoader loader = new FXMLLoader(ProcessManagementWindow.class.getResource("page.fxml"));
         AnchorPane rootPane = loader.load();
 
-        ProcessManagementController controller = loader.getController();
+        // 获取页面对应的 controller 实例
+        controller = loader.getController();
         MainApp.setProcessManagementController(controller);
 
         Scene scene = new Scene(rootPane);
-
 
         this.primaryStage.setScene(scene);
         this.primaryStage.setTitle("进程调度");
@@ -93,5 +95,10 @@ public class ProcessManagementWindow extends Application {
                 e.printStackTrace();
             }
         }
+
+    }
+
+    public static ProcessManagementController getController() {
+        return controller;
     }
 }
