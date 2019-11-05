@@ -62,8 +62,6 @@ public class ProcessManagementWindow extends Application {
 
         // 绑定 isMinimized 值
         bindIsMinimized(scene);
-
-        controller.updateData(null);
     }
 
     /**
