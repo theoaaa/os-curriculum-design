@@ -26,4 +26,14 @@ public class DiskBlock {
         }
         return cnt;
     }
+
+    public String getBlock(){
+        StringBuffer buffer = new StringBuffer();
+        for (DiskByte b: bytes) {
+            buffer.append(b.getDiskByte()+" ");
+        }
+        buffer.append("\n");
+        return String.valueOf(buffer);
+    }
+
 }

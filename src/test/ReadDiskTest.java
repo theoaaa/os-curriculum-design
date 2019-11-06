@@ -1,12 +1,11 @@
 package test;
 
-import disk.bean.DiskBlock;
-import disk.bean.DiskByte;
 import disk.service.DiskService;
 import org.junit.Test;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * @author Rorke
@@ -14,12 +13,13 @@ import java.util.ArrayList;
  * 测试类
  */
 public class ReadDiskTest {
+    DiskService service;
     @Test
     public void getDisk() throws IOException {
-        DiskService.ReadDisk();
-        ArrayList<Integer> list = DiskService.getDiskStatus();
-        for (Integer i: list) {
-            System.out.println(i);
-        }
+//        service = DiskService.getDiskService();
+//        service.ReadDisk();
+//        service.modifyDisk();
+
     }
+
 }
