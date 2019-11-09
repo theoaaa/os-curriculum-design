@@ -5,7 +5,8 @@ package disk.bean;
  * @Date 2019/11/4
  */
 public class DiskBlock {
-    private DiskByte[] bytes = new DiskByte[64];
+    private final int SIZE_PER_BLOCK = 64;
+    private DiskByte[] bytes = new DiskByte[SIZE_PER_BLOCK];
 
     public DiskByte[] getBytes() {
         return bytes;
@@ -17,23 +18,20 @@ public class DiskBlock {
 
     public int getDiskStatus(){
         int cnt = 0;
-        for (DiskByte b : bytes) {
-            if(b.getDiskByte().equals("00000000")){
-                break;
+        for (int i = SIZE_PER_BLOCK - 1; i >= 0; i--) {
+            String emp = "00000000";
+            if (i != 0) {
+                if (!bytes[i - 1].getDiskByte().equals(emp) && bytes[i].getDiskByte().equals(emp)) {
+                    cnt = i;
+                    break;
+                }
             }else {
-                cnt++;
+                if (!bytes[i].getDiskByte().equals(emp)) {
+                    cnt = 1;
+                }
             }
         }
         return cnt;
-    }
-
-    public String getBlock(){
-        StringBuffer buffer = new StringBuffer();
-        for (DiskByte b: bytes) {
-            buffer.append(b.getDiskByte()+" ");
-        }
-        buffer.append("\n");
-        return String.valueOf(buffer);
     }
 
 }
