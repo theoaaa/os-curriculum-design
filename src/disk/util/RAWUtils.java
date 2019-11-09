@@ -11,12 +11,10 @@ import java.util.ArrayList;
  * @date 2019/11/5 10:07
  * 提供最基础的读写文件方法
  */
-public class Utils {
+public class RAWUtils {
     private File file;
-    private FileWriter writer;
-    private FileReader reader;
 
-    public Utils(String actualPath) {
+    public RAWUtils(String actualPath) {
         this.file = new File(actualPath);
     }
 
@@ -25,28 +23,25 @@ public class Utils {
      * @return 返回文件中的内容
      */
     public String read(){
-        String line = null;
+        String line;
         StringBuffer stringBuffer = null;
         try {
-            reader = new FileReader(file);
+            FileReader reader = new FileReader(file);
             BufferedReader buffer = new BufferedReader(reader);
             stringBuffer = new StringBuffer();
             while ((line=buffer.readLine())!=null){
-                stringBuffer.append(line+"\n");
+                stringBuffer.append(line).append("\n");
             }
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            return String.valueOf(stringBuffer);
         }
+        return String.valueOf(stringBuffer);
     }
 
     /**
      * 读取磁盘情况的方法
-     * @param blocks
+     * @param blocks 磁盘块
      */
     public void read(ArrayList<DiskBlock> blocks){
         String str = read();
@@ -69,7 +64,7 @@ public class Utils {
      * @param str 写入文件的字符串
      */
     public void write(String str){
-        writer = null;
+        FileWriter writer;
         try {
             writer = new FileWriter(file);
             writer.write(str);
@@ -85,12 +80,11 @@ public class Utils {
      * @param blocks 磁盘块
      */
     public void write(ArrayList<DiskBlock> blocks){
-        int cnt = 0;
         StringBuffer buffer = new StringBuffer();
         for (DiskBlock b : blocks) {
             DiskByte[] bytes = b.getBytes();
             for (DiskByte tmpByte : bytes) {
-                buffer.append(tmpByte.getDiskByte()+" ");
+                buffer.append(tmpByte.getDiskByte()).append(" ");
             }
             buffer.append("\n");
         }

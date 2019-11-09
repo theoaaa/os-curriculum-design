@@ -3,9 +3,7 @@ package test;
 import disk.service.DiskService;
 import org.junit.Test;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * @author Rorke
@@ -13,13 +11,15 @@ import java.util.Scanner;
  * 测试类
  */
 public class ReadDiskTest {
-    DiskService service;
     @Test
-    public void getDisk() throws IOException {
-//        service = DiskService.getDiskService();
-//        service.ReadDisk();
+    public void getDisk() {
+        DiskService service = DiskService.getDiskService();
+        service.readDisk();
+        ArrayList<Integer> list = service.getDiskStatus();
+        for (Integer i : list) {
+            System.out.println(i);
+        }
 //        service.modifyDisk();
-
     }
 
 }

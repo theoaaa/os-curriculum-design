@@ -1,10 +1,8 @@
 package disk.service;
 
 import disk.bean.DiskBlock;
-import disk.bean.DiskByte;
-import disk.util.Utils;
+import disk.util.RAWUtils;
 
-import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -13,19 +11,20 @@ import java.util.ArrayList;
  * 为disk界面服务
  */
 public class DiskService {
-    private ArrayList<DiskBlock> blocks = new ArrayList<>(256);
-    private final String diskPath = "simulateDisk/Disk.txt";
-    private final int fatSize = 2;
-    private DiskBlock[] fatBlocks = new DiskBlock[fatSize];
-    private Utils diskUtils;
-    public static DiskService diskService = new DiskService();
+    private final int BLOCKS_SIZE = 256;
+    private final int FAT_SIZE = 2;
+    private ArrayList<DiskBlock> blocks = new ArrayList<>(BLOCKS_SIZE);
+    private DiskBlock[] fatBlocks = new DiskBlock[FAT_SIZE];
+    private RAWUtils diskUtils;
+    private static DiskService diskService = new DiskService();
 
     private DiskService() {
-        this.diskUtils = new Utils(diskPath);
+        String diskPath = "simulateDisk/Disk.txt";
+        this.diskUtils = new RAWUtils(diskPath);
     }
 
     private void setFileAccessTableBlock() {
-        for (int i = 0; i < fatSize; i++) {
+        for (int i = 0; i < FAT_SIZE; i++) {
             fatBlocks[i] = blocks.get(i);
         }
     }
@@ -33,7 +32,7 @@ public class DiskService {
     /**
      * 系统启动时执行，读取disk的情况
      */
-    public void ReadDisk() {
+    public void readDisk() {
         diskUtils.read(blocks);
         setFileAccessTableBlock();
     }
