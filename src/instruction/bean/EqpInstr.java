@@ -1,7 +1,5 @@
 package instruction.bean;
 
-import instruction.util.InstrUtils;
-
 /**
  * @author Rorke
  * @date 2019/11/5 15:23
@@ -22,8 +20,8 @@ public class EqpInstr extends Instruction {
      */
     public String getEqpInstr(int equipmentNum, int time) {
         buffer = new StringBuffer();
-        this.equipmentNum = InstrUtils.decToBinary(equipmentNum, 2);
-        this.value = InstrUtils.decToBinary(time, 3);
+        this.equipmentNum = instrUtils.decToBinary(equipmentNum, 2);
+        this.value = instrUtils.decToBinary(time, 3);
         instructionsAppend();
         return String.valueOf(buffer);
     }

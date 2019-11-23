@@ -11,10 +11,10 @@ import java.util.ArrayList;
  * @date 2019/11/5 10:07
  * 提供最基础的读写文件方法
  */
-public class RAWUtils {
+public class DiskUtils {
     private File file;
-
-    public RAWUtils(String actualPath) {
+    private final int SIZE_PER_BLOCK = 128;
+    public DiskUtils(String actualPath) {
         this.file = new File(actualPath);
     }
 
@@ -22,7 +22,7 @@ public class RAWUtils {
      * 读取文件的一般方法
      * @return 返回文件中的内容
      */
-    public String read(){
+    private String read(){
         String line;
         StringBuffer stringBuffer = null;
         try {
@@ -44,17 +44,19 @@ public class RAWUtils {
      * @param blocks 磁盘块
      */
     public void read(ArrayList<DiskBlock> blocks){
+        int index = 0;
         String str = read();
         String[] lines = str.split("\n");
         for (String s : lines) {
             String[] tmp = s.split(" ");
-            DiskByte[] bytes = new DiskByte[64];
-            for (int i = 0; i < 64; i++) {
+            DiskByte[] bytes = new DiskByte[SIZE_PER_BLOCK];
+            for (int i = 0; i < SIZE_PER_BLOCK; i++) {
                 bytes[i] = new DiskByte();
                 bytes[i].setDiskByte(tmp[i]);
             }
             DiskBlock block = new DiskBlock();
             block.setBytes(bytes);
+            block.setIndex(index++);
             blocks.add(block);
         }
     }
@@ -63,7 +65,7 @@ public class RAWUtils {
      * 写文件的一般方法
      * @param str 写入文件的字符串
      */
-    public void write(String str){
+    private void write(String str){
         FileWriter writer;
         try {
             writer = new FileWriter(file);

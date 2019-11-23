@@ -13,13 +13,14 @@ import java.util.ArrayList;
 public class ReadDiskTest {
     @Test
     public void getDisk() {
-        DiskService service = DiskService.getDiskService();
+        DiskService service = DiskService.getInstance();
         service.readDisk();
         ArrayList<Integer> list = service.getDiskStatus();
         for (Integer i : list) {
             System.out.println(i);
         }
-//        service.modifyDisk();
+
+        service.modifyDisk();
     }
 
 }

@@ -7,7 +7,7 @@ package instruction.bean;
  */
 public class EndInstr extends Instruction {
     public EndInstr() {
-        this.prefix = "00000000";
+        this.prefix = "00000001";
     }
 
     public String getEndInstr() {

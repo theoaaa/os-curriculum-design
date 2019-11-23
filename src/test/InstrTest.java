@@ -12,7 +12,7 @@ public class InstrTest {
         System.out.println(instr.createForInstr(2, 68));
         System.out.println(instr.createMCMInstr(0, 0, 2, 2, 0));
         System.out.println(instr.createMCRInstr(0, 0, 1, 34, 1));
-        System.out.println(instr.createRCRInstr(0, 32, 1, 23, 0));
+        System.out.println(instr.createRCRInstr(0, 3, 1, 23, 0));
         System.out.println(instr.createEndInstr());
     }
 }

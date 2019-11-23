@@ -1,7 +1,7 @@
 package disk.service;
 
 import disk.bean.DiskBlock;
-import disk.util.RAWUtils;
+import disk.util.DiskUtils;
 
 import java.util.ArrayList;
 
@@ -11,16 +11,17 @@ import java.util.ArrayList;
  * 为disk界面服务
  */
 public class DiskService {
-    private final int BLOCKS_SIZE = 256;
+    private static final int BLOCKS_SIZE = 256;
     private final int FAT_SIZE = 2;
-    private ArrayList<DiskBlock> blocks = new ArrayList<>(BLOCKS_SIZE);
+    private static ArrayList<DiskBlock> blocks = new ArrayList<>(BLOCKS_SIZE);
     private DiskBlock[] fatBlocks = new DiskBlock[FAT_SIZE];
-    private RAWUtils diskUtils;
+    private DiskUtils diskUtils;
     private static DiskService diskService = new DiskService();
 
     private DiskService() {
         String diskPath = "simulateDisk/Disk.txt";
-        this.diskUtils = new RAWUtils(diskPath);
+        this.diskUtils = new DiskUtils(diskPath);
+        readDisk();
     }
 
     private void setFileAccessTableBlock() {
@@ -30,6 +31,13 @@ public class DiskService {
     }
 
     /**
+     * 获得FAT
+     * @return FAT
+     */
+    public DiskBlock[] getFATBlocks(){
+        return fatBlocks;
+    }
+    /**
      * 系统启动时执行，读取disk的情况
      */
     public void readDisk() {
@@ -38,7 +46,7 @@ public class DiskService {
     }
 
     /**
-     * 程序结束时执行，保存对磁盘的修改
+     * 有文件改变时，保存对磁盘的修改
      */
     public void modifyDisk() {
         diskUtils.write(blocks);
@@ -51,16 +59,32 @@ public class DiskService {
     public ArrayList<Integer> getDiskStatus() {
         ArrayList<Integer> statusList = new ArrayList<>();
         for (DiskBlock b : blocks) {
-            statusList.add(b.getDiskStatus());
+            statusList.add(b.getBlockStatus());
         }
+        statusList.set(0,128);
+        statusList.set(1,128);
+        statusList.set(2,128);
         return statusList;
     }
 
     /**
+     * 获取磁盘块
+     * @return 磁盘块，DiskBlock
+     */
+    public DiskBlock getDiskBlock(int index){
+        return blocks.get(index);
+    }
+    public int getBlockIndex(DiskBlock block){
+        return blocks.indexOf(block);
+    }
+    /**
      * 单例模式
      * @return 确保程序中所有diskService实例为同一个
      */
-    public static DiskService getDiskService() {
+    public static DiskService getInstance() {
+        if(diskService==null){
+            diskService = new DiskService();
+        }
         return diskService;
     }
 }

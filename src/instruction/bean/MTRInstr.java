@@ -1,6 +1,5 @@
 package instruction.bean;
 
-import instruction.util.InstrUtils;
 
 /**
  * @author Rorke
@@ -20,8 +19,8 @@ public class MTRInstr extends Instruction {
      */
     public String getMTRInstr(int regNum, int memAddr) {
         buffer = new StringBuffer();
-        this.register = InstrUtils.decToBinary(regNum, 2);
-        this.memory = InstrUtils.decToBinary(memAddr, 3);
+        this.register = instrUtils.decToBinary(regNum, 2);
+        this.memory = instrUtils.decToBinary(memAddr, 3);
         instructionsAppend();
         return String.valueOf(buffer);
     }

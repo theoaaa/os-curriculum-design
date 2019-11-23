@@ -1,6 +1,5 @@
 package instruction.bean;
 
-import instruction.util.InstrUtils;
 
 /**
  * @author Rorke
@@ -22,9 +21,9 @@ public class CalInstr extends Instruction {
      */
     public String getCalInstr(int signed, int regA, int regB) {
         buffer = new StringBuffer();
-        this.signed = InstrUtils.decToBinary(signed, 1);
-        this.regA = InstrUtils.decToBinary(regA, 2);
-        this.regB = InstrUtils.decToBinary(regB, 2);
+        this.signed = instrUtils.decToBinary(signed, 1);
+        this.regA = instrUtils.decToBinary(regA, 2);
+        this.regB = instrUtils.decToBinary(regB, 2);
         instructionsAppend();
         return String.valueOf(buffer);
     }

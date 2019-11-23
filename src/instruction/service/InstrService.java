@@ -116,4 +116,3 @@ public class InstrService {
                 memToRegInstr.getMTRInstr(regA, memAddrA);
     }
 }
-//push

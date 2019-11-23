@@ -1,6 +1,5 @@
 package instruction.bean;
 
-import instruction.util.InstrUtils;
 
 /**
  * @author Rorke
@@ -24,9 +23,9 @@ public class AsnInstr extends Instruction {
      */
     public String getAsnInstr(int regNum, int value, int control) {
         buffer = new StringBuffer();
-        this.register = InstrUtils.decToBinary(regNum, 2);
-        this.control = InstrUtils.decToBinary(control, 3);
-        this.value = InstrUtils.decToBinary(value, 8);
+        this.register = instrUtils.decToBinary(regNum, 2);
+        this.control = instrUtils.decToBinary(control, 3);
+        this.value = instrUtils.decToBinary(value, 8);
         instructionsAppend();
         return String.valueOf(buffer);
     }
