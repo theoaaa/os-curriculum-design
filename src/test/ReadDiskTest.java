@@ -3,8 +3,6 @@ package test;
 import disk.service.DiskService;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 /**
  * @author Rorke
  * @Date 2019/11/4
@@ -14,12 +12,9 @@ public class ReadDiskTest {
     @Test
     public void getDisk() {
         DiskService service = DiskService.getInstance();
-        service.readDisk();
-        ArrayList<Integer> list = service.getDiskStatus();
-        for (Integer i : list) {
-            System.out.println(i);
+        for (int i = 0; i < 256; i++) {
+            System.out.println(service.getDiskBlock(i).getIndex());
         }
-
         service.modifyDisk();
     }
 

@@ -15,6 +15,7 @@ public class CatalogEntry {
         this.context = context;
     }
     public CatalogEntry(){ }
+
     public String getName(){
         StringBuffer buf = new StringBuffer();
         for(int i = 0;i<3;i++){
@@ -22,6 +23,7 @@ public class CatalogEntry {
         }
         return String.valueOf(buf);
     }
+
     public Character getExpandedName(){
         return (char)fileUtils.binaryToDec(context[3].getDiskByte());
     }
@@ -56,4 +58,9 @@ public class CatalogEntry {
         }
     }
 
+    public void setSize(int length) {
+        String str = fileUtils.decToBinary(length, 16);
+        context[6].setDiskByte(str.substring(0, 8));
+        context[7].setDiskByte(str.substring(8));
+    }
 }

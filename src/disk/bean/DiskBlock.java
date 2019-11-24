@@ -9,7 +9,7 @@ public class DiskBlock {
     private DiskByte[] bytes = new DiskByte[SIZE_PER_BLOCK];
     private final String emp = "00000000";
     private int index;
-    private int nextIndex;
+    private boolean occupy;
     public DiskByte[] getBytes() {
         return bytes;
     }
@@ -37,11 +37,11 @@ public class DiskBlock {
         this.index = index;
     }
 
-    public int getNextIndex() {
-        return nextIndex;
+    public boolean isOccupy() {
+        return occupy;
     }
 
-    public void setNextIndex(int nextIndex) {
-        this.nextIndex = nextIndex;
+    public void setOccupy(boolean occupy) {
+        this.occupy = occupy;
     }
 }

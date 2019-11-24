@@ -7,6 +7,9 @@ import file.bean.CatalogContainer;
 import file.bean.CatalogEntry;
 import file.operation.CreateFile;
 import file.util.FileUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 /**
  * @author Rorke
@@ -16,59 +19,148 @@ public class FileService {
     private DiskService diskService;
     private static FileService fileService = new FileService();
     private DiskBlock[] FATBlocks;
-    private Catalog rootCatalog;
     private CatalogContainer tables;
     private FileUtils fileUtils = FileUtils.getInstance();
     private FileService(){
         diskService = DiskService.getInstance();
-        rootCatalog = (Catalog) diskService.getDiskBlock(2);
+        Catalog rootCatalog = new Catalog(diskService.getDiskBlock(2));
         FATBlocks =  diskService.getFATBlocks();
         tables = CatalogContainer.getInstance(rootCatalog);
     }
 
+    /**
+     *
+     */
     public void backward(){
         tables.backward();
     }
 
+    /**
+     *
+     */
     public void forward(){
         tables.forward();
     }
 
-    public void openFile(){
-
-    }
-
-    public void createFile(String name, String expandedName, String attribute, int startedIndex, int size,String[] fileContext){
-        CreateFile createFile = new CreateFile(name, expandedName, attribute, startedIndex, size);
-        String[] context = createFile.getEntryContext();
-        Catalog catalog = tables.getTop();
-        for(CatalogEntry tmp:catalog.getEntries()) {
-            if (tmp.isEmpty()) {
-                tmp.setContext(context);
-                break;
+    /**
+     *
+     * @param name
+     * @return
+     */
+    private CatalogEntry getOpenCatalogEntry(String name) {
+        ArrayList<Catalog> readingCatalog = getFullCatalog();
+        CatalogEntry targetEntry = null;
+        for (Catalog catalog : readingCatalog) {
+            for (CatalogEntry entry : catalog.getEntries()) {
+                if (entry.getName().equals(name)) {
+                    targetEntry = entry;
+                }
             }
         }
-        int emptyIndex = 0;
-        if(fileContext.length>128){
-            emptyIndex = getEmptyBlockIndex();
-            modifyFAT(startedIndex,emptyIndex);
+        return targetEntry;
+    }
+
+    /**
+     *
+     * @param name
+     * @param expandedName
+     * @param attribute
+     * @param size
+     * @return
+     */
+    public boolean createFile(@NotNull String name, String expandedName, String attribute, int size) {
+        ArrayList<Catalog> readingCatalog = getFullCatalog();
+        CreateFile createFile = new CreateFile();
+        while (name.length() < 3) {
+            name += (char) 0;
+        }
+        for (Catalog catalog : readingCatalog) {
+            for (CatalogEntry entry : catalog.getEntries()) {
+                if (entry.getName().equals(name)) {
+                    return false;
+                }
+                if (entry.isEmpty()) {
+                    entry.setContext(createFile.getEntryContext(name, expandedName, attribute, getEmptyBlockIndex(), size));
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param fileName
+     * @param fileContext
+     */
+    public void saveFile(String fileName, String[] fileContext) {
+        ArrayList<Catalog> readingCatalog = getFullCatalog();
+        CreateFile createFile = new CreateFile();
+        CatalogEntry targetEntry = null;
+        for (Catalog catalog : readingCatalog) {
+            for (CatalogEntry entry : catalog.getEntries()) {
+                if (entry.getName().equals(fileName)) {
+                    targetEntry = entry;
+                    break;
+                }
+            }
+        }
+        if (targetEntry == null) {
+            return;
+        } else {
+            targetEntry.setSize(fileContext.length);
+            int startIndex = targetEntry.getStartedBlockIndex();
+            int nextIndex = getEmptyBlockIndex();
         }
     }
 
-    private void modifyFAT(int blockIndex,int nextIndex){
+    /**
+     * @return
+     */
+    private ArrayList<Catalog> getFullCatalog() {
+        int nextFat;
+        Catalog tmp;
+        int presentIndex = tables.getTop().getIndex();
+        ArrayList<Catalog> readingCatalog = new ArrayList<>();
+        while ((nextFat = fileUtils.getNextBlockIndex(FATBlocks, tables.getTop())) != 1) {
+            tmp = new Catalog(diskService.getDiskBlock(presentIndex));
+            readingCatalog.add(tmp);
+            presentIndex = nextFat;
+        }
+        tmp = new Catalog(diskService.getDiskBlock(presentIndex));
+        readingCatalog.add(tmp);
+        return readingCatalog;
+    }
+
+
+    /**
+     * @param blockIndex
+     * @param nextIndex
+     */
+    private void modifyFAT(int blockIndex, int nextIndex){
         FATBlocks[blockIndex/128].getBytes()[blockIndex%128].setDiskByte(fileUtils.decToBinary(nextIndex,8));
     }
 
-    public int getEmptyBlockIndex(){
-        int index = 3;
-        for(;index<256;index++){
-            if(diskService.getDiskBlock(index).getBlockStatus()==0){
+    /**
+     *
+     * @return
+     */
+    private int getEmptyBlockIndex() {
+        int index = 0;
+        for (int i = 0; i < 256; i++) {
+            if (!diskService.getDiskBlock(i).isOccupy()) {
+                index = i;
                 break;
             }
         }
+        diskService.getDiskBlock(index).setOccupy(true);
         return index;
     }
 
+    /**
+     *
+     * @return
+     */
     public static FileService getInstance(){
         if(fileService==null){
             fileService = new FileService();

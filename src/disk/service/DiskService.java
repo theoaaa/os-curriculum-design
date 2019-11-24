@@ -40,8 +40,13 @@ public class DiskService {
     /**
      * 系统启动时执行，读取disk的情况
      */
-    public void readDisk() {
+    private void readDisk() {
         diskUtils.read(blocks);
+        OccupyService occupyService = new OccupyService();
+        boolean[] occupyList = occupyService.getOccupy();
+        for (int i = 0; i < BLOCKS_SIZE; i++) {
+            blocks.get(i).setOccupy(occupyList[i]);
+        }
         setFileAccessTableBlock();
     }
 
@@ -50,6 +55,8 @@ public class DiskService {
      */
     public void modifyDisk() {
         diskUtils.write(blocks);
+        OccupyService occupyService = new OccupyService();
+        occupyService.writeOccupy(blocks);
     }
 
     /**
@@ -61,12 +68,16 @@ public class DiskService {
         for (DiskBlock b : blocks) {
             statusList.add(b.getBlockStatus());
         }
-        statusList.set(0,128);
-        statusList.set(1,128);
-        statusList.set(2,128);
         return statusList;
     }
 
+    public boolean[] getOccupyStatus() {
+        boolean[] occupyList = new boolean[BLOCKS_SIZE];
+        for (int i = 0; i < BLOCKS_SIZE; i++) {
+            occupyList[i] = blocks.get(i).isOccupy();
+        }
+        return occupyList;
+    }
     /**
      * 获取磁盘块
      * @return 磁盘块，DiskBlock

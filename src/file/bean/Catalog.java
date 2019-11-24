@@ -13,17 +13,13 @@ public class Catalog extends DiskBlock {
     private CatalogEntry[] entries = new CatalogEntry[CATALOG_AMOUNT];
     public Catalog(DiskBlock catalogBlock){
         this.setBytes(catalogBlock.getBytes());
+        this.setIndex(catalogBlock.getIndex());
         for(int i=0;i<CATALOG_AMOUNT;i++){
             DiskByte[] entry = new DiskByte[CATALOG_SIZE];
             for(int j=0;j<CATALOG_SIZE;j++){
                 entry[j] = catalogBlock.getBytes()[i*CATALOG_SIZE+j];
             }
             entries[i] = new CatalogEntry(entry);
-        }
-    }
-    public void printCatalogIsEmpty(){
-        for (CatalogEntry catalog : entries) {
-            System.out.println(catalog.isEmpty());
         }
     }
     public CatalogEntry[] getEntries(){

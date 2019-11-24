@@ -1,8 +1,7 @@
 package file.util;
 
+import disk.bean.DiskBlock;
 import instruction.util.InstrUtils;
-
-import java.io.File;
 
 /**
  * @author Rorke
@@ -26,5 +25,20 @@ public class FileUtils extends InstrUtils {
             result += Math.pow(2,(highestIndex-index))*(binaryString.charAt(index)-'0');
         }
         return result;
+    }
+
+    public String[] getSubContext(String[] source, int startIndex, int lastLength) {
+        String[] tmp = new String[lastLength - startIndex];
+        System.out.println(lastLength + " " + startIndex);
+        for (int i = 0; i < lastLength - startIndex; i++) {
+            tmp[i] = source[i];
+        }
+        return tmp;
+    }
+
+    public int getNextBlockIndex(DiskBlock[] fatTable, DiskBlock fileBlock) {
+        int row = fileBlock.getIndex() / 128;
+        int column = fileBlock.getIndex() % 128;
+        return this.binaryToDec(fatTable[row].getBytes()[column].getDiskByte());
     }
 }
