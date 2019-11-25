@@ -25,4 +25,14 @@ public class Catalog extends DiskBlock {
     public CatalogEntry[] getEntries(){
         return entries;
     }
+    public boolean isFull(){
+        boolean statement = true;
+        for(CatalogEntry entry:entries){
+            if(entry.isEmpty()){
+                statement = false;
+                break;
+            }
+        }
+        return statement;
+    }
 }

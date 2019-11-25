@@ -34,8 +34,16 @@ public class CreateFile extends AbstractOperation{
     public void setFileContext(String[] context, DiskBlock block) {
         if (context != null) {
             DiskByte[] bytes = block.getBytes();
+            int length = context.length;
+            int index = 0;
             for (int i = 0; i < context.length; i++) {
                 bytes[i].setDiskByte(context[i]);
+                index = i;
+            }
+            if(length<SIZE_PER_BLOCK){
+                for(;index<SIZE_PER_BLOCK;index++){
+                    bytes[index].setDiskByte("00000000");
+                }
             }
         }
     }

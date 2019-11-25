@@ -45,4 +45,8 @@ public class CatalogContainer extends ArrayList<Catalog> {
     public Catalog getRoot() {
         return this.get(0);
     }
+
+    public int getPresentIndex() {
+        return presentIndex;
+    }
 }

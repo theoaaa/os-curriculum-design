@@ -16,8 +16,9 @@ public class CatalogTest {
         DiskService diskService = DiskService.getInstance();
         FileService fileService = FileService.getInstance();
         FileUtils fileUtils = FileUtils.getInstance();
-        System.out.println(fileService.createFile("C:", " ", "D", 0));
-        System.out.println(fileService.createFile("C:", " ", "D", 0));
+        System.out.println(fileService.createFile("D:", " ", "D", 0));
+        System.out.println(fileService.createFile("E:", " ", "D", 0));
+        System.out.println(fileService.createFile("F:", " ", "D", 0));
         diskService.modifyDisk();
     }
 }

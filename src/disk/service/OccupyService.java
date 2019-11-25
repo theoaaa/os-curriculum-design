@@ -2,7 +2,6 @@ package disk.service;
 
 import disk.bean.DiskBlock;
 import disk.util.DiskUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -20,7 +19,7 @@ class OccupyService {
         return occupyList;
     }
 
-    void writeOccupy(@NotNull ArrayList<DiskBlock> blocks) {
+    void writeOccupy(ArrayList<DiskBlock> blocks) {
         boolean[] occupyList = new boolean[256];
         int i = 0;
         for (DiskBlock b : blocks) {
