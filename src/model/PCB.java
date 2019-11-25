@@ -18,14 +18,16 @@ public class PCB {
     public static final int IO_INTERRUPT = 1;
 
     //进程队列
-    private static List<PCB> EmptyPCBList = new LinkedList<>();
-    private static List<PCB> ReadyProcessPCBList = new LinkedList<>();
-    private static List<PCB> BlockedProcessPCBList = new LinkedList<>();
+    private static List<PCB> emptyPCBList = new LinkedList<>();
+    private static List<PCB> allPCBList = new LinkedList<>();
+    private static List<PCB> readyProcessPCBList = new LinkedList<>();
+    private static List<PCB> blockedProcessPCBList = new LinkedList<>();
 
     //保存寄存器组数据
     private Integer registers[] = new Integer[4];
 
     //PCB属性
+    private int pcbId;
     private String processID;
     private int restTime;
     private int processState;
@@ -37,9 +39,11 @@ public class PCB {
 
     //初始化进程队列
     static {
-        int pcbTotalNumber = 10;
-        while(pcbTotalNumber-->0){
-            EmptyPCBList.add(new PCB());
+        for(int pcbId = 0; pcbId < 10; pcbId++){
+            PCB pcb = new PCB();
+            pcb.pcbId = pcbId;
+            emptyPCBList.add(pcb);
+            allPCBList.add(pcb);
         }
     }
 
@@ -93,15 +97,15 @@ public class PCB {
     }
 
     public static List<PCB> getEmptyPCBList() {
-        return EmptyPCBList;
+        return emptyPCBList;
     }
 
     public static List<PCB> getReadyProcessPCBList() {
-        return ReadyProcessPCBList;
+        return readyProcessPCBList;
     }
 
     public static List<PCB> getBlockedProcessPCBList() {
-        return BlockedProcessPCBList;
+        return blockedProcessPCBList;
     }
 
     public int getProcessState() {
@@ -143,6 +147,14 @@ public class PCB {
 
     public void setProcessInstructions(List<String> processInstructions) {
         this.processInstructions = processInstructions;
+    }
+
+    public int getPcbId() {
+        return pcbId;
+    }
+
+    public void setPcbId(int pcbId) {
+        this.pcbId = pcbId;
     }
 
     @Override
