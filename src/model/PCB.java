@@ -157,6 +157,14 @@ public class PCB {
         this.pcbId = pcbId;
     }
 
+    public static List<PCB> getAllPCBList() {
+        return allPCBList;
+    }
+
+    public static void setAllPCBList(List<PCB> allPCBList) {
+        PCB.allPCBList = allPCBList;
+    }
+
     @Override
     public String toString() {
         return "PCB{" +
