@@ -1,6 +1,7 @@
 package file.operation;
 
 import disk.bean.DiskBlock;
+import disk.bean.DiskByte;
 import disk.service.DiskService;
 import file.bean.Catalog;
 import file.bean.CatalogEntry;
@@ -13,40 +14,33 @@ import java.util.ArrayList;
  */
 public class OpenFile extends AbstractOperation {
     private DiskService diskService;
-
+    private String[] targetStr;
+    private  final  int SIZE_PER_BLOCK = 128;
+    private int index = 0;
     public OpenFile() {
         DiskService diskService = DiskService.getInstance();
     }
 
-    public String openTextFile(DiskBlock[] fatTable, Catalog catalog, String fileName) {
-        int result;
-        ArrayList<CatalogEntry> entries = new ArrayList<>();
-        for (CatalogEntry entry : catalog.getEntries()) {
-            entries.add(entry);
-        }
-        while ((result = getFileFatResult(fatTable, catalog)) != 1) {
-            catalog = new Catalog(diskService.getDiskBlock(result));
-            for (CatalogEntry entry : catalog.getEntries()) {
-                entries.add(entry);
+    public String[] openFile(DiskBlock[] fatTable, CatalogEntry targetEntry) {
+        targetStr = new String[targetEntry.getSize()];
+        int startIndex = targetEntry.getStartedBlockIndex();
+        if(fileUtils.getFileFatResult(fatTable,diskService.getDiskBlock(startIndex))==1){
+            getContext(startIndex);
+        }else{
+            int nextIndex;
+            while ((nextIndex = fileUtils.getFileFatResult(fatTable,diskService.getDiskBlock(startIndex)))!=1){
+                getContext(startIndex);
+                startIndex = nextIndex;
             }
+            getContext(startIndex);
         }
-        CatalogEntry targetEntry = null;
-        for (CatalogEntry entry : entries) {
-            if (entry.getName().equals(fileName)) {
-                targetEntry = entry;
-            }
-        }
-        StringBuffer buf = new StringBuffer();
-        DiskBlock fileBlock = diskService.getDiskBlock(targetEntry.getStartedBlockIndex());
-        while ((result = getFileFatResult(fatTable, fileBlock)) != 1) {
-
-        }
-        return String.valueOf(buf);
+        return targetStr;
     }
 
-    private int getFileFatResult(DiskBlock[] fatTable, DiskBlock diskBlock) {
-        int row = diskBlock.getIndex() / 128;
-        int column = diskBlock.getIndex() % 128;
-        return fileUtils.binaryToDec(fatTable[row].getBytes()[column].getDiskByte());
+    private void getContext(int blockIndex){
+        DiskByte[] bytes = diskService.getDiskBlock(blockIndex).getBytes();
+        for(int i=0;i<SIZE_PER_BLOCK;i++){
+            targetStr[index++] = bytes[i].getDiskByte();
+        }
     }
 }
