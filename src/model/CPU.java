@@ -1,6 +1,9 @@
 package model;
 
+import javafx.application.Platform;
 import util.StringUtil;
+import view.processManagement.ProcessManagementController;
+import view.processManagement.ProcessManagementWindow;
 
 import java.io.*;
 import java.util.List;
@@ -35,27 +38,23 @@ public class CPU {
             @Override
             public void run() {
                 while (true) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     PCB pcb = getReadyProcessPCB();
                     if (pcb == null) {
                         System.out.println("就绪队列为空");
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+                        try {
+                            showData(null);
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         psw.initPSW();
                         while (!(psw.isProcessEnd() || psw.isIOInterrupt() || psw.isTimeSliceUsedUp())) {
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             //取指令并将指令指针 +1
                             String currentInstruction = pcb.getCurrentInstruction();
                             pcb.increaseCurrentInstructionIndex();
@@ -68,7 +67,7 @@ public class CPU {
                             psw.setTimeSliceUsedUp(pcb.isTimeSliceUsedUp());
                             psw.setProcessEnd(pcb.isProcessEnd());
 
-                            System.out.println(pcb);
+                            showData(pcb);
                             //检测并处理异常
                             handleInterrupt(pcb);
                         }
@@ -94,42 +93,99 @@ public class CPU {
             //解析并执行指令
             private void executeInstruction(String instruction, PCB pcb) {
                 ++CPU.systemTime;
-                if (instruction.startsWith("000")) {
-                    //执行end
-                    pcb.setProcessState(PCB.END);
+//                if (instruction.startsWith("000")) {
+//                    //执行end
+//                    pcb.setProcessState(PCB.END);
+////                    System.out.println(pcb.getProcessState());
+////                    System.out.println(pcb);
+//                    pcb.setIntermediateResult("程序执行结束");
+//                } else if (instruction.startsWith("001")) {
+//                    //执行x++
+//                    String i = instruction.substring(3, 5);
+//                    int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
+//                    reg[regNum]++;
+//                    pcb.setIntermediateResult("reg" + regNum + " = " + reg[regNum]);
+//                } else if (instruction.startsWith("010")) {
+//                    //执行x--
+//                    String i = instruction.substring(3, 5);
+//                    int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
+//                    reg[regNum]--;
+//                    pcb.setIntermediateResult("reg" + regNum + " = " + reg[regNum]);
+//                } else if (instruction.startsWith("100")) {
+//                    //申请控制设备
+//                    String i = instruction.substring(3, 5);
+//                    int equipmentNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
+//                    //发起申请设备信号
+//                    // *************
+//                    // *************
+//                    // *************
+//                    pcb.setIntermediateResult("进程" + pcb.getProcessID() + "申请设备" + equipmentNum);
+//                    psw.setIOInterrupt(true);
+//                } else if (instruction.startsWith("110")) {
+//                    //给x赋值
+//                    int regIndex = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
+//                    int value = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
+//                    reg[regIndex] = value;
+//                    pcb.setIntermediateResult("reg" + regIndex + " = " + value);
+//                } else {
+//                    pcb.setIntermediateResult("指令错误！");
+//                }
+                switch (instruction.substring(0, 3)) {
+                    case "000":
+                        //执行end
+                        pcb.setProcessState(PCB.END);
 //                    System.out.println(pcb.getProcessState());
 //                    System.out.println(pcb);
-                    pcb.setIntermediateResult("程序执行结束");
-                } else if (instruction.startsWith("001")) {
-                    //执行x++
-                    String i = instruction.substring(3, 5);
-                    int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
-                    reg[regNum]++;
-                    pcb.setIntermediateResult("reg" + regNum + " = " + reg[regNum]);
-                } else if (instruction.startsWith("010")) {
-                    //执行x--
-                    String i = instruction.substring(3, 5);
-                    int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
-                    reg[regNum]--;
-                    pcb.setIntermediateResult("reg" + regNum + " = " + reg[regNum]);
-                } else if (instruction.startsWith("100")) {
-                    //申请控制设备
-                    String i = instruction.substring(3, 5);
-                    int equipmentNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
-                    //发起申请设备信号
-                    // *************
-                    // *************
-                    // *************
-                    pcb.setIntermediateResult("进程" + pcb.getProcessID() + "申请设备" + equipmentNum);
-                    psw.setIOInterrupt(true);
-                } else if (instruction.startsWith("110")) {
-                    //给x赋值
-                    int regIndex = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
-                    int value = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
-                    reg[regIndex] = value;
-                    pcb.setIntermediateResult("reg" + regIndex + " = " + value);
-                } else {
-                    pcb.setIntermediateResult("指令错误！");
+                        pcb.setIntermediateResult("程序执行结束");
+                        break;
+                    case "001":
+                        //申请控制设备
+                        String i = instruction.substring(3, 5);
+                        int equipmentNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
+                        //发起申请设备信号
+                        // *************
+                        // *************
+                        // *************
+                        pcb.setIntermediateResult("进程" + pcb.getProcessID() + "申请设备" + equipmentNum);
+                        psw.setIOInterrupt(true);
+                        break;
+                    case "010":
+                        //存值
+                        int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
+                        int memAddress = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
+                        /*
+                        存值代码
+                         */
+                        break;
+                    case "011":
+                        //取值
+                        regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
+                        memAddress = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
+                        /*
+                        取值代码
+                         */
+                        break;
+                    case "100":
+                        //赋值指令
+                        int regIndex = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
+                        int value = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
+                        reg[regIndex] = value;
+                        pcb.setIntermediateResult("reg" + regIndex + " = " + value);
+                        break;
+                    case "110":
+                        //运算指令
+                        int regA = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
+                        int regB = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(6)));
+                        char op = instruction.charAt(5);
+                        if (op == '0') {
+                            reg[regA] += reg[regB];
+                        } else {
+                            reg[regA] -= reg[regB];
+                        }
+                        break;
+                    default:
+                        pcb.setIntermediateResult("指令错误！");
+                        break;
                 }
             }
 
@@ -173,7 +229,21 @@ public class CPU {
         return reg;
     }
 
-    public static void main(String[] args) {
+    private void showData(PCB pcb) {
+        ProcessManagementController controller = ProcessManagementWindow.getController();
+        if (controller != null) {
+            Platform.runLater(new Runnable() {
+                                  @Override
+                                  public void run() {
+                                      controller.updateData(pcb);
+
+                                  }
+                              }
+            );
+        }
+    }
+
+    public static void work() {
         ProcessControl.create(new File("resources/test.e"));
         ProcessControl.create(new File("resources/test.e"));
         ProcessControl.create(new File("resources/test.e"));

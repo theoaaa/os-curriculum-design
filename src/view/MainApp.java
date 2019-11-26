@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.CPU;
 import view.processManagement.ProcessManagementController;
 import view.processManagement.ProcessManagementWindow;
 
@@ -18,6 +19,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        CPU.work();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("操作系统");
 
