@@ -7,12 +7,9 @@ import disk.bean.DiskByte;
  * @author Rorke
  * @date 2019/11/11 12:35
  */
-public class CreateFile extends AbstractOperation{
+public class CreateOperation extends AbstractOperation{
     private String[] entryContext = new String[8];
     private final int SIZE_PER_BLOCK = 128;
-
-    public CreateFile() {
-    }
 
     public String[] getEntryContext(String name, String expandedName, String attribute, int startedIndex, int size) {
         for(int i=0;i<3;i++){

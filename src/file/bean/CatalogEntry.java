@@ -11,7 +11,7 @@ public class CatalogEntry {
     private DiskByte[] context;
     private final String emp = "00000000";
     private FileUtils fileUtils = FileUtils.getInstance();
-    public CatalogEntry(DiskByte[] context){
+    CatalogEntry(DiskByte[] context){
         this.context = context;
     }
     public CatalogEntry(){ }
@@ -24,11 +24,11 @@ public class CatalogEntry {
         return String.valueOf(buf);
     }
 
-    public Character getExpandedName(){
-        return (char)fileUtils.binaryToDec(context[3].getDiskByte());
+    public String getExpandedName(){
+        return String.valueOf((char)fileUtils.binaryToDec(context[3].getDiskByte()));
     }
-    public Character getAttribute(){
-        return (char)fileUtils.binaryToDec(context[4].getDiskByte());
+    public String getAttribute(){
+        return String.valueOf((char)fileUtils.binaryToDec(context[4].getDiskByte()));
     }
     public int getStartedBlockIndex(){
         return fileUtils.binaryToDec(context[5].getDiskByte());
@@ -62,5 +62,38 @@ public class CatalogEntry {
         String str = fileUtils.decToBinary(length, 16);
         context[6].setDiskByte(str.substring(0, 8));
         context[7].setDiskByte(str.substring(8));
+    }
+
+    public void setContext(DiskByte[] lastContext) {
+        String[] context = new String[8];
+        for (int i = 0; i < 8; i++) {
+            context[i] = lastContext[i].getDiskByte();
+        }
+        setContext(context);
+    }
+
+    public void setEmpty() {
+        for (DiskByte diskByte : context) {
+            diskByte.setDiskByte("00000000");
+        }
+    }
+    public boolean setUsedSize(int size){
+        if(getUsedSize()+size>getTotalSize()){
+            return false;
+        }else{
+            int usedSize = getUsedSize()+size;
+            context[6].setDiskByte(fileUtils.decToBinary(usedSize,8));
+            return true;
+        }
+    }
+
+    public int getUsedSize(){
+        return fileUtils.binaryToDec(context[6].getDiskByte());
+    }
+    public int getTotalSize(){
+        return fileUtils.binaryToDec(context[7].getDiskByte());
+    }
+    public void setExpandedName(String t) {
+        context[3].setDiskByte(fileUtils.decToBinary(t.charAt(0),1));
     }
 }

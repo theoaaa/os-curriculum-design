@@ -12,16 +12,16 @@ import java.util.ArrayList;
  * @author Rorke
  * @date 2019/11/22 16:01
  */
-public class OpenFile extends AbstractOperation {
+public class OpenOperation extends AbstractOperation {
     private DiskService diskService;
     private String[] targetStr;
     private  final  int SIZE_PER_BLOCK = 128;
     private int index = 0;
-    public OpenFile() {
+    public OpenOperation() {
         DiskService diskService = DiskService.getInstance();
     }
 
-    public String[] openFile(DiskBlock[] fatTable, CatalogEntry targetEntry) {
+    public String[] open(DiskBlock[] fatTable, CatalogEntry targetEntry) {
         targetStr = new String[targetEntry.getSize()];
         int startIndex = targetEntry.getStartedBlockIndex();
         if(fileUtils.getFileFatResult(fatTable,diskService.getDiskBlock(startIndex))==1){

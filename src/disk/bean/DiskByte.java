@@ -11,4 +11,7 @@ public class DiskByte {
     public void setDiskByte(String diskByte) {
         this.diskByte = diskByte;
     }
+    public boolean isEmpty(){
+        return diskByte.equals("00000000");
+    }
 }

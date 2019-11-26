@@ -15,6 +15,7 @@ public class ReadDiskTest {
         for (int i = 0; i < 256; i++) {
             System.out.println(service.getDiskBlock(i).getIndex());
         }
+        service.formatDisk();
         service.modifyDisk();
     }
 

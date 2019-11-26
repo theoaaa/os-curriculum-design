@@ -5,11 +5,10 @@ package disk.bean;
  * @Date 2019/11/4
  */
 public class DiskBlock {
-    public final int SIZE_PER_BLOCK = 128;
+    protected final int SIZE_PER_BLOCK = 128;
     private DiskByte[] bytes = new DiskByte[SIZE_PER_BLOCK];
     private final String emp = "00000000";
     private int index;
-    private boolean occupy;
     public DiskByte[] getBytes() {
         return bytes;
     }
@@ -35,13 +34,5 @@ public class DiskBlock {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public boolean isOccupy() {
-        return occupy;
-    }
-
-    public void setOccupy(boolean occupy) {
-        this.occupy = occupy;
     }
 }

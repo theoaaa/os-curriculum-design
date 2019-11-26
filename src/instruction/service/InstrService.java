@@ -21,7 +21,6 @@ public class InstrService {
 
     /**
      * 单例模式
-     *
      * @return instrService
      */
     public static InstrService getInstrService() {
@@ -53,34 +52,24 @@ public class InstrService {
      * 创建赋值指令
      * @param regNum 寄存器号
      * @param value  数值
-     * @return 16位的赋值指令
+     * @return 8位的赋值指令
      */
     public String createAsnInstr(int regNum, int value) {
-        return assignInstr.getAsnInstr(regNum, value, 0);
-    }
-
-    /**
-     * 创建循环指令
-     * @param control   接下来control条指令进行循环
-     * @param loopTimes 循环次数
-     * @return 16位的赋值指令
-     */
-    public String createForInstr(int control, int loopTimes) {
-        return assignInstr.getAsnInstr(2, loopTimes, control);
+        return assignInstr.getAsnInstr(regNum, value);
     }
 
     /**
      * 创建两个常量相加的运算指令
-     * @param regA  寄存器编号A
-     * @param regB  寄存器编号B
+     * @param regA   寄存器编号A
+     * @param regB   寄存器编号B
      * @param valueA 值A
      * @param valueB 值B
      * @param signed 符号，0为+ 1为-
      * @return 2条赋值指令+1条运算指令
      */
     public String createRCRInstr(int regA, int regB, int valueA, int valueB, int signed) {
-        return assignInstr.getAsnInstr(regA, valueA, 0) +
-                assignInstr.getAsnInstr(regB, valueB, 0) +
+        return assignInstr.getAsnInstr(regA, valueA) +
+                assignInstr.getAsnInstr(regB, valueB) +
                 calculateInstr.getCalInstr(signed, regA, regB);
     }
 
@@ -95,7 +84,7 @@ public class InstrService {
      */
     public String createMCRInstr(int memAddr, int regA, int regB, int valueB, int signed) {
         return regToMemInstr.getRTMInstr(regA, memAddr) +
-                assignInstr.getAsnInstr(regB, valueB, 0) +
+                assignInstr.getAsnInstr(regB, valueB) +
                 calculateInstr.getCalInstr(signed, regA, regB) +
                 memToRegInstr.getMTRInstr(regA, memAddr);
     }

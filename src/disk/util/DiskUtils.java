@@ -61,18 +61,6 @@ public class DiskUtils {
         }
     }
 
-    public void read(boolean[] occupyList) {
-        String str = read();
-        String[] lines = str.split("\n");
-        int i = 0;
-        for (String s : lines) {
-            if (s.equals("1")) {
-                occupyList[i++] = true;
-            } else {
-                occupyList[i++] = false;
-            }
-        }
-    }
     /**
      * 写文件的一般方法
      * @param str 写入文件的字符串
@@ -105,15 +93,4 @@ public class DiskUtils {
         write(String.valueOf(buffer));
     }
 
-    public void write(boolean[] occupyList) {
-        StringBuffer buf = new StringBuffer();
-        for (boolean b : occupyList) {
-            if (b) {
-                buf.append("1\n");
-            } else {
-                buf.append("0\n");
-            }
-        }
-        write(String.valueOf(buf));
-    }
 }
