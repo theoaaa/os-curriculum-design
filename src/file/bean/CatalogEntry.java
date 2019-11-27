@@ -96,4 +96,13 @@ public class CatalogEntry {
     public void setExpandedName(String t) {
         context[3].setDiskByte(fileUtils.decToBinary(t.charAt(0),1));
     }
+
+    public void setName(String newName, String oldExpandedName) {
+        String name = fileUtils.formatName(newName,oldExpandedName);
+        int i=0;
+        while (i<3){
+            context[i].setDiskByte(fileUtils.decToBinary(name.charAt(i),1));
+            i++;
+        }
+    }
 }
