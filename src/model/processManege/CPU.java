@@ -1,6 +1,8 @@
-package model;
+package model.processManege;
 
 import javafx.application.Platform;
+import model.deviceManage.DeviceAllocation;
+import model.memoryManage.MemoryManage;
 import util.StringUtil;
 import view.processManagement.ProcessManagementController;
 import view.processManagement.ProcessManagementWindow;
@@ -134,18 +136,14 @@ public class CPU {
                     case "000":
                         //执行end
                         pcb.setProcessState(PCB.END);
-//                    System.out.println(pcb.getProcessState());
-//                    System.out.println(pcb);
                         pcb.setIntermediateResult("程序执行结束");
                         break;
                     case "001":
                         //申请控制设备
                         String i = instruction.substring(3, 5);
-                        int equipmentNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
+                        String equipmentNum = StringUtil.parseDeviceID(StringUtil.parseBinaryToDecimal(Integer.parseInt(i)));
                         //发起申请设备信号
-                        // *************
-                        // *************
-                        // *************
+                        DeviceAllocation.allocate(pcb, equipmentNum, PCB.IO_INTERRUPT);
                         pcb.setIntermediateResult("进程" + pcb.getProcessID() + "申请设备" + equipmentNum);
                         psw.setIOInterrupt(true);
                         break;
@@ -153,22 +151,23 @@ public class CPU {
                         //存值
                         int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
                         int memAddress = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
-                        /*
-                        存值代码
-                         */
+                        //存值代码
+                        MemoryManage.storeValue(memAddress, reg[regNum]);
+                        pcb.setIntermediateResult("([" + memAddress + "])" + " = " + "reg" + regNum + "(" + reg[regNum] + ")");
                         break;
                     case "011":
                         //取值
                         regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
                         memAddress = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
-                        /*
-                        取值代码
-                         */
+                        //取值代码
+                        int value = MemoryManage.getValue(memAddress);
+                        reg[regNum] = value;
+                        pcb.setIntermediateResult("reg" + regNum + " = " + value + "([" + memAddress + "])");
                         break;
                     case "100":
                         //赋值指令
                         int regIndex = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
-                        int value = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
+                        value = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
                         reg[regIndex] = value;
                         pcb.setIntermediateResult("reg" + regIndex + " = " + value);
                         break;
@@ -179,8 +178,10 @@ public class CPU {
                         char op = instruction.charAt(5);
                         if (op == '0') {
                             reg[regA] += reg[regB];
+                            pcb.setIntermediateResult("reg" + regA + " = " + "reg" + regA + " + " + "reg" + regB);
                         } else {
                             reg[regA] -= reg[regB];
+                            pcb.setIntermediateResult("reg" + regA + " = " + "reg" + regA + " - " + "reg" + regB);
                         }
                         break;
                     default:
@@ -189,26 +190,29 @@ public class CPU {
                 }
             }
 
-            //检测并处理中断, 若有中断则返回true
+            //检测并处理中断
             private void handleInterrupt(PCB pcb) {
                 if (psw.isProcessEnd()) {
-                    ProcessControl.destory(pcb);
+                    ProcessControl.destroy(pcb);
                 } else if (psw.isIOInterrupt()) {
                     //执行IO操作，进入阻塞队列，IO_BLOCK_TIME时间后从阻塞队列回到就绪队列
                     ProcessControl.block(pcb, PCB.IO_INTERRUPT);
-                    cachedThreadPool.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            //进程休眠模拟执行IO操作
-                            try {
-                                Thread.sleep(IO_BLOCK_TIME);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            ProcessControl.awake(pcb);
-                        }
-                    });
+                    /*
+                    XXX
+                    模拟执行io操作，交由设备管理实现
+                     */
+//                    cachedThreadPool.submit(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            //进程休眠模拟执行IO操作
+//                            try {
+//                                Thread.sleep(IO_BLOCK_TIME);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                            ProcessControl.awake(pcb);
+//                        }
+//                    });
                 } else if (psw.isTimeSliceUsedUp()) {
                     pcb.resetRestTime();
                     PCB.getReadyProcessPCBList().add(pcb);

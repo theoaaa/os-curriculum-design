@@ -1,6 +1,6 @@
 package view.deviceManagement;
 
-import model.PCB;
+import model.processManege.PCB;
 import model.device.Device;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;

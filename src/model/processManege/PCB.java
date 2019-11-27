@@ -1,6 +1,5 @@
-package model;
+package model.processManege;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class PCB {
 
     //PCB属性
     private int pcbId;
-    private String processID;
+    private Integer processID;
     private int restTime;
     private int processState;
     private int processBlockReason;
@@ -58,7 +57,7 @@ public class PCB {
         this.restTime = CPU.timeSliceLength;
     }
 
-    public void initPCBToReady(String processID){
+    public void initPCBToReady(int processID){
         this.processID = processID;
         this.restTime = CPU.timeSliceLength;
         for(int i = 0; i < 4; ++ i){
@@ -68,7 +67,7 @@ public class PCB {
 
     public void clearPCBToBlank(){
         this.restTime = 0;
-        this.processID = "";
+        this.processID = null;
         this.currentInstructionIndex = 0;
         this.intermediateResult = "";
         this.processBlockReason = NOT_BLOCKED;
@@ -88,7 +87,7 @@ public class PCB {
     }
 
     // getter & setter
-    public String getProcessID() {
+    public Integer getProcessID() {
         return processID;
     }
 

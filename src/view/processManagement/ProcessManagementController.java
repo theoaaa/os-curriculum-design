@@ -1,17 +1,12 @@
 package view.processManagement;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import model.CPU;
-import model.PCB;
+import model.processManege.CPU;
+import model.processManege.PCB;
 
 public class  ProcessManagementController {
     @FXML

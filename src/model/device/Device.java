@@ -1,6 +1,6 @@
 package model.device;
 
-import model.PCB;
+import model.processManege.PCB;
 
 public class Device {
 

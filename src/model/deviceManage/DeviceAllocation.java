@@ -1,6 +1,6 @@
 package model.deviceManage;
 
-import model.PCB;
+import model.processManege.PCB;
 import model.device.Device;
 import model.device.DeviceA;
 import model.device.DeviceB;
@@ -8,7 +8,6 @@ import model.device.DeviceC;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
