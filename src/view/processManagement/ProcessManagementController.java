@@ -60,6 +60,16 @@ public class  ProcessManagementController {
     public void updateData(PCB pcb) {
         systemTime.setText(CPU.getSystemTime() + "");
 
+        if (pcb == null) {
+            implementingCommand.setText("");
+            implementResolve.setText("");
+            processId.setText("无进程");
+            remainTimePart.setText("");
+            readyList.clear();
+            blockingList.clear();
+            return;
+        }
+
         implementResolve.setText(pcb.getIntermediateResult());
 
         implementingCommand.setText(pcb.getCurrentInstruction());
