@@ -1,17 +1,12 @@
 package view.processManagement;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import model.CPU;
-import model.PCB;
+import model.processManege.CPU;
+import model.processManege.PCB;
 
 public class  ProcessManagementController {
     @FXML
@@ -74,18 +69,18 @@ public class  ProcessManagementController {
 
         implementingCommand.setText(pcb.getCurrentInstruction());
 
-        processId.setText(pcb.getProcessID());
+        processId.setText(pcb.getProcessID().toString());
 
         remainTimePart.setText(pcb.getRestTime() + "");
 
         readyList.clear();
         for (PCB readyPCB : PCB.getReadyProcessPCBList()) {
-            readyList.add(readyPCB.getProcessID());
+            readyList.add(readyPCB.getProcessID().toString());
         }
 
         blockingList.clear();
         for (PCB blockingPCB : PCB.getBlockedProcessPCBList()) {
-            blockingList.add(blockingPCB.getProcessID());
+            blockingList.add(blockingPCB.getProcessID().toString());
         }
     }
 
