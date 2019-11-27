@@ -73,6 +73,9 @@ public class PCB {
         this.processBlockReason = NOT_BLOCKED;
         this.processState = BLANK;
         this.processInstructions = null;
+        for(int i = 0; i < 4; ++ i){
+            this.registers[i] = new Integer(0);
+        }
     }
 
     public void decreaseRestTime() {
@@ -137,7 +140,7 @@ public class PCB {
         return restTime==0;
     }
     public boolean isProcessEnd(){
-        return processInstructions==null || currentInstructionIndex == processInstructions.size();
+        return processState == PCB.END || processInstructions==null || currentInstructionIndex == processInstructions.size();
     }
 
     public List<String> getProcessInstructions() {
@@ -172,7 +175,6 @@ public class PCB {
                 ", restTime=" + restTime +
                 ", processState=" + processState +
                 ", processBlockReason=" + processBlockReason +
-                ", processInstructions=" + processInstructions +
                 ", currentInstructionIndex=" + currentInstructionIndex +
                 ", intermediateResult='" + intermediateResult + '\'' +
                 '}';

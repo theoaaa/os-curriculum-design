@@ -69,18 +69,18 @@ public class  ProcessManagementController {
 
         implementingCommand.setText(pcb.getCurrentInstruction());
 
-        processId.setText(pcb.getProcessID());
+        processId.setText(pcb.getProcessID().toString());
 
         remainTimePart.setText(pcb.getRestTime() + "");
 
         readyList.clear();
         for (PCB readyPCB : PCB.getReadyProcessPCBList()) {
-            readyList.add(readyPCB.getProcessID());
+            readyList.add(readyPCB.getProcessID().toString());
         }
 
         blockingList.clear();
         for (PCB blockingPCB : PCB.getBlockedProcessPCBList()) {
-            blockingList.add(blockingPCB.getProcessID());
+            blockingList.add(blockingPCB.getProcessID().toString());
         }
     }
 

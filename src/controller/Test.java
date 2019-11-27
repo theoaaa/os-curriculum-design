@@ -1,10 +1,11 @@
 package controller;
 
+import model.processManege.CPU;
+
 import java.util.ArrayList;
 
 public class Test {
     public static void main(String[] args) {
-        ArrayList<Integer> integers = new ArrayList<>(10);
-        System.out.println(integers.get(0));
+        CPU.work();
     }
 }

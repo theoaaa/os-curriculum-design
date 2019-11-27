@@ -18,7 +18,7 @@ public class CPU {
     //申请使用设备时休眠时间
     public static int IO_BLOCK_TIME = 6000;
     //一条指令执行后休眠的时间（显示中间结果）
-    public static int SLEEP_TIME_FOR_EACH_INSTRUCTMENT = 1000;
+    public static int SLEEP_TIME_FOR_EACH_INSTRUCTMENT = 2000;
 
     //系统时间
     private static int systemTime = 0;
@@ -51,9 +51,9 @@ public class CPU {
                         }
                     } else {
                         psw.initPSW();
-                        while (!(psw.isProcessEnd() || psw.isIOInterrupt() || psw.isTimeSliceUsedUp())) {
+                        while (!psw.isProcessEnd() && !psw.isIOInterrupt() && !psw.isTimeSliceUsedUp()) {
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(SLEEP_TIME_FOR_EACH_INSTRUCTMENT);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -72,6 +72,7 @@ public class CPU {
                             showData(pcb);
                             //检测并处理异常
                             handleInterrupt(pcb);
+                            System.out.println(pcb);
                         }
                     }
                 }
@@ -136,6 +137,7 @@ public class CPU {
                     case "000":
                         //执行end
                         pcb.setProcessState(PCB.END);
+                        pcb.setProcessBlockReason(PCB.END);
                         pcb.setIntermediateResult("程序执行结束");
                         break;
                     case "001":
@@ -143,7 +145,7 @@ public class CPU {
                         String i = instruction.substring(3, 5);
                         String equipmentNum = StringUtil.parseDeviceID(StringUtil.parseBinaryToDecimal(Integer.parseInt(i)));
                         //发起申请设备信号
-                        DeviceAllocation.allocate(pcb, equipmentNum, PCB.IO_INTERRUPT);
+                        DeviceAllocation.allocate(pcb, equipmentNum, CPU.IO_BLOCK_TIME);
                         pcb.setIntermediateResult("进程" + pcb.getProcessID() + "申请设备" + equipmentNum);
                         psw.setIOInterrupt(true);
                         break;
@@ -153,7 +155,7 @@ public class CPU {
                         int memAddress = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
                         //存值代码
                         MemoryManage.storeValue(memAddress, reg[regNum]);
-                        pcb.setIntermediateResult("([" + memAddress + "])" + " = " + "reg" + regNum + "(" + reg[regNum] + ")");
+                        pcb.setIntermediateResult("mem[" + memAddress + "]" + " = " + "reg" + regNum + "(" + reg[regNum] + ")");
                         break;
                     case "011":
                         //取值
@@ -162,7 +164,7 @@ public class CPU {
                         //取值代码
                         int value = MemoryManage.getValue(memAddress);
                         reg[regNum] = value;
-                        pcb.setIntermediateResult("reg" + regNum + " = " + value + "([" + memAddress + "])");
+                        pcb.setIntermediateResult("reg" + regNum + " = " + value + "(mem[" + memAddress + "])");
                         break;
                     case "100":
                         //赋值指令
@@ -185,6 +187,7 @@ public class CPU {
                         }
                         break;
                     default:
+                        System.out.println("指令错误！");
                         pcb.setIntermediateResult("指令错误！");
                         break;
                 }
@@ -239,8 +242,7 @@ public class CPU {
             Platform.runLater(new Runnable() {
                                   @Override
                                   public void run() {
-                                      controller.updateData(pcb);
-
+                                      controller.updateData(pcb.getProcessID() == null? null : pcb);
                                   }
                               }
             );
