@@ -39,7 +39,7 @@ public class ProcessManagementWindow extends Application {
         AnchorPane rootPane = loader.load();
 
         // 获取页面对应的 controller 实例
-        controller = loader.getController();
+        ProcessManagementWindow.controller = loader.getController();
         MainApp.setProcessManagementController(controller);
 
         Scene scene = new Scene(rootPane);
@@ -99,6 +99,6 @@ public class ProcessManagementWindow extends Application {
     }
 
     public static ProcessManagementController getController() {
-        return controller;
+        return ProcessManagementWindow.controller;
     }
 }
