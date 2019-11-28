@@ -15,7 +15,7 @@ public class OpenOperation extends AbstractOperation {
     private  final  int SIZE_PER_BLOCK = 128;
     private int index = 0;
     public OpenOperation() {
-        DiskService diskService = DiskService.getInstance();
+         diskService = DiskService.getInstance();
     }
 
     public String[] open(DiskBlock[] fatTable, CatalogEntry targetEntry) {
@@ -36,7 +36,8 @@ public class OpenOperation extends AbstractOperation {
 
     private void getContext(int blockIndex){
         DiskByte[] bytes = diskService.getDiskBlock(blockIndex).getBytes();
-        for(int i=0;i<SIZE_PER_BLOCK;i++){
+        System.out.println(targetStr.length);
+        for(int i=0;i<targetStr.length;i++){
             targetStr[index++] = bytes[i].getDiskByte();
         }
     }
