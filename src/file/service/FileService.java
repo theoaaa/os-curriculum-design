@@ -23,12 +23,19 @@ public class FileService {
     private CatalogContainer tables;
     private FileUtils fileUtils = FileUtils.getInstance();
     private CopyOperation copyOperation = new CopyOperation();
+    private RootCatalog rootCatalog;
     private FileService(){
         diskService = DiskService.getInstance();
-        RootCatalog rootCatalog = new RootCatalog(diskService.getDiskBlock(2));
+        rootCatalog = new RootCatalog(diskService.getDiskBlock(2));
         FATBlocks =  diskService.getFATBlocks();
         tables = CatalogContainer.getInstance(rootCatalog);
     }
+
+    public RootCatalog getRootCatalog() {
+        return rootCatalog;
+    }
+    //catalog getEntries()
+    //for each entry getName
 
     /**
      * 前进方法
@@ -143,6 +150,7 @@ public class FileService {
      */
     public String[] openFile(String fileName,String expandedName){
         CatalogEntry targetEntry =  fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
+        System.out.println(targetEntry.getName()+"in openFile");
         OpenOperation openOperation = new OpenOperation();
         return openOperation.open(FATBlocks,targetEntry);
     }

@@ -3,10 +3,7 @@ package file.operation;
 import disk.bean.DiskBlock;
 import disk.bean.DiskByte;
 import disk.service.DiskService;
-import file.bean.Catalog;
 import file.bean.CatalogEntry;
-
-import java.util.ArrayList;
 
 /**
  * @author Rorke

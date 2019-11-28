@@ -6,7 +6,7 @@ import file.bean.Catalog;
 import file.bean.CatalogContainer;
 import file.bean.CatalogEntry;
 import instruction.util.InstrUtils;
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -82,6 +82,7 @@ public class FileUtils extends InstrUtils {
         boolean breakFlag = false;
         for (Catalog catalog : readingCatalog) {
             for (CatalogEntry entry : catalog.getEntries()) {
+                System.out.println(formatName(entry.getName(),entry.getExpandedName())+" "+(formatName(fileName,expandedName)));
                 if (formatName(entry.getName(),entry.getExpandedName()).equals(formatName(fileName,expandedName))) {
                     targetEntry = entry;
                     breakFlag = true;
@@ -108,7 +109,8 @@ public class FileUtils extends InstrUtils {
      * @param expandedName
      * @return
      */
-    public String formatName(@NotNull String name, String expandedName) {
+    //public String formatName(@NotNull String name, String expandedName) {
+    public String formatName(String name, String expandedName) {
         StringBuilder nameBuilder = new StringBuilder(name);
         while (nameBuilder.length()<3){
             nameBuilder.append((char) 0);
@@ -146,6 +148,7 @@ public class FileUtils extends InstrUtils {
     public int getFileFatResult(DiskBlock[] fatTable, DiskBlock diskBlock) {
         int row = diskBlock.getIndex() / 128;
         int column = diskBlock.getIndex() % 128;
+        System.out.println(row+" "+column);
         return fileUtils.binaryToDec(fatTable[row].getBytes()[column].getDiskByte());
     }
 
