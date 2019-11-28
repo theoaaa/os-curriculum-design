@@ -1,5 +1,7 @@
 package test;
 
+import disk.bean.DiskBlock;
+import disk.bean.DiskByte;
 import disk.service.DiskService;
 import org.junit.Test;
 
@@ -12,10 +14,11 @@ public class ReadDiskTest {
     @Test
     public void getDisk() {
         DiskService service = DiskService.getInstance();
-        for (int i = 0; i < 256; i++) {
-            System.out.println(service.getDiskBlock(i).getIndex());
+        DiskBlock block = service.getDiskBlock(3);
+        for (DiskByte tmpByte :
+                block.getBytes()) {
+            System.out.print(tmpByte.getDiskByte()+" ");
         }
-        service.formatDisk();
         service.modifyDisk();
     }
 
