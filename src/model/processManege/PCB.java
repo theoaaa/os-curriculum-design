@@ -1,6 +1,5 @@
-package model;
+package model.processManege;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class PCB {
 
     //PCB属性
     private int pcbId;
-    private String processID;
+    private Integer processID;
     private int restTime;
     private int processState;
     private int processBlockReason;
@@ -58,7 +57,7 @@ public class PCB {
         this.restTime = CPU.timeSliceLength;
     }
 
-    public void initPCBToReady(String processID){
+    public void initPCBToReady(int processID){
         this.processID = processID;
         this.restTime = CPU.timeSliceLength;
         for(int i = 0; i < 4; ++ i){
@@ -68,12 +67,15 @@ public class PCB {
 
     public void clearPCBToBlank(){
         this.restTime = 0;
-        this.processID = "";
+        this.processID = null;
         this.currentInstructionIndex = 0;
         this.intermediateResult = "";
         this.processBlockReason = NOT_BLOCKED;
         this.processState = BLANK;
         this.processInstructions = null;
+        for(int i = 0; i < 4; ++ i){
+            this.registers[i] = new Integer(0);
+        }
     }
 
     public void decreaseRestTime() {
@@ -88,7 +90,7 @@ public class PCB {
     }
 
     // getter & setter
-    public String getProcessID() {
+    public Integer getProcessID() {
         return processID;
     }
 
@@ -138,7 +140,7 @@ public class PCB {
         return restTime==0;
     }
     public boolean isProcessEnd(){
-        return processInstructions==null || currentInstructionIndex == processInstructions.size();
+        return processState == PCB.END || processInstructions==null || currentInstructionIndex == processInstructions.size();
     }
 
     public List<String> getProcessInstructions() {
@@ -173,7 +175,6 @@ public class PCB {
                 ", restTime=" + restTime +
                 ", processState=" + processState +
                 ", processBlockReason=" + processBlockReason +
-                ", processInstructions=" + processInstructions +
                 ", currentInstructionIndex=" + currentInstructionIndex +
                 ", intermediateResult='" + intermediateResult + '\'' +
                 '}';

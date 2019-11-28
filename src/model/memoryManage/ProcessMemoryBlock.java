@@ -1,6 +1,6 @@
 package model.memoryManage;
 
-import model.PCB;
+import model.processManege.PCB;
 
 public class ProcessMemoryBlock {
 

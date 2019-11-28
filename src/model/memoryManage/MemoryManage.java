@@ -1,6 +1,6 @@
 package model.memoryManage;
 
-import model.PCB;
+import model.processManege.PCB;
 
 import java.util.ArrayList;
 import java.util.HashMap;

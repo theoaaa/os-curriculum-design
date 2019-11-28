@@ -5,9 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.CPU;
+import model.processManege.CPU;
 import view.processManagement.ProcessManagementController;
-import view.processManagement.ProcessManagementWindow;
 
 import java.io.IOException;
 
