@@ -10,5 +10,4 @@ public class RootCatalog extends Catalog {
     public RootCatalog(DiskBlock catalogBlock) {
         super(catalogBlock);
     }
-
 }

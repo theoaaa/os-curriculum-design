@@ -23,10 +23,9 @@ public class FileService {
     private CatalogContainer tables;
     private FileUtils fileUtils = FileUtils.getInstance();
     private CopyOperation copyOperation = new CopyOperation();
-    private RootCatalog rootCatalog;
     private FileService(){
         diskService = DiskService.getInstance();
-        rootCatalog = new RootCatalog(diskService.getDiskBlock(2));
+        RootCatalog rootCatalog = new RootCatalog(diskService.getDiskBlock(2));
         FATBlocks =  diskService.getFATBlocks();
         tables = CatalogContainer.getInstance(rootCatalog);
     }
@@ -43,7 +42,7 @@ public class FileService {
 
     /**
      * 后退方法
-     * @param fileName
+     * @param fileName 目录名
      * @return 目录
      */
     public String[] backward(String fileName){
@@ -81,14 +80,26 @@ public class FileService {
     /**
      * 黏贴文件方法
      */
-    public void pasteFile(){
+    public boolean pasteFile(){
         CatalogEntry entry = copyOperation.getEntry();
-        createFile(entry.getName(),entry.getExpandedName(),entry.getAttribute(),entry.getSize());
-        String[] context = copyOperation.getFileContext(FATBlocks);
-        saveFile(entry.getName(),entry.getExpandedName(),context);
+        boolean statement = createFile(entry.getName(),entry.getExpandedName(),entry.getAttribute(),entry.getSize());
+        if(statement) {
+            String[] context = copyOperation.getFileContext(FATBlocks);
+            saveFile(entry.getName(), entry.getExpandedName(), context);
+        }
+        return statement;
     }
 
-
+    public boolean renameFile(String oldFileName,String oldExpandedName,String newName){
+        CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(newName,oldExpandedName,tables,FATBlocks);
+        boolean statement = false;
+        if(targetEntry.isEmpty()){
+            targetEntry = fileUtils.getTargetEntryByTables(oldFileName,oldExpandedName,tables,FATBlocks);
+            targetEntry.setName(newName, oldExpandedName);
+            statement = true;
+        }
+        return statement;
+    }
 
     /**
      * 移动文件

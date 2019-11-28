@@ -79,16 +79,22 @@ public class FileUtils extends InstrUtils {
     }
     private CatalogEntry getEntry(String fileName, String expandedName, ArrayList<Catalog> readingCatalog){
         CatalogEntry targetEntry = null;
+        boolean breakFlag = false;
         for (Catalog catalog : readingCatalog) {
             for (CatalogEntry entry : catalog.getEntries()) {
                 if (formatName(entry.getName(),entry.getExpandedName()).equals(formatName(fileName,expandedName))) {
                     targetEntry = entry;
+                    breakFlag = true;
                     break;
                 }
                 if(entry.isEmpty()){
                     targetEntry = entry;
+                    breakFlag = true;
                     break;
                 }
+            }
+            if(breakFlag){
+                break;
             }
         }
         return targetEntry;
