@@ -1,7 +1,6 @@
 package file.service;
 
 import disk.bean.DiskBlock;
-import disk.bean.DiskByte;
 import disk.service.DiskService;
 import file.bean.Catalog;
 import file.bean.CatalogContainer;
@@ -52,9 +51,8 @@ public class FileService {
      * @param fileName 目录名
      * @return 目录
      */
-    public String[] backward(String fileName){
-        tables.backward();
-        return openFile(fileName,"D");
+    public void  backward(){
+        tables.getRoot();
     }
 
     /**
