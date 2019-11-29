@@ -6,16 +6,16 @@ import file.bean.Catalog;
 import file.bean.CatalogContainer;
 import file.bean.CatalogEntry;
 import instruction.util.InstrUtils;
-//import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+
+//import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Rorke
  * @date 2019/11/20 20:50
  */
 public class FileUtils extends InstrUtils {
-    private int highestIndex;
     public static FileUtils fileUtils = new FileUtils();
     private FileUtils(){}
     public static FileUtils getInstance(){
@@ -31,11 +31,11 @@ public class FileUtils extends InstrUtils {
      * @return  十进制数
      */
     public int binaryToDec(String binaryString){
-        highestIndex = binaryString.length()-1;
+        int highestIndex = binaryString.length() - 1;
         int index = highestIndex;
         int result = 0;
         for(;index>=0;index--){
-            result += Math.pow(2,(highestIndex-index))*(binaryString.charAt(index)-'0');
+            result += Math.pow(2, (highestIndex - index)) * (binaryString.charAt(index) - '0');
         }
         return result;
     }
@@ -104,12 +104,11 @@ public class FileUtils extends InstrUtils {
         return getEntry(fileName,expandedName,catalog);
     }
     /**
-     *
-     * @param name
-     * @param expandedName
-     * @return
+     * 格式化名字，将名字和扩展名连接起来
+     * @param name 文件名字
+     * @param expandedName 扩展名
+     * @return 格式化后的名字
      */
-    //public String formatName(@NotNull String name, String expandedName) {
     public String formatName(String name, String expandedName) {
         StringBuilder nameBuilder = new StringBuilder(name);
         while (nameBuilder.length()<3){
@@ -121,16 +120,19 @@ public class FileUtils extends InstrUtils {
     }
 
     /**
-     * @param blockIndex
-     * @param nextIndex
+     * 修改fat表的内容
+     * @param blockIndex 需要修改的下标
+     * @param nextIndex  下一个磁盘号
+     * @param FATBlocks  fat表
      */
     public void modifyFAT(int blockIndex, int nextIndex,DiskBlock[] FATBlocks){
         FATBlocks[blockIndex/128].getBytes()[blockIndex%128].setDiskByte(fileUtils.decToBinary(nextIndex,8));
     }
 
     /**
-     *
-     * @return
+     * 获得下一个未被占用的磁盘块编号
+     * @param FATBlocks fat表
+     * @return 下一个未被占用的磁盘块编号
      */
     public int getEmptyBlockIndex(DiskBlock[] FATBlocks) {
         int index = -1;
@@ -145,25 +147,37 @@ public class FileUtils extends InstrUtils {
         return index;
     }
 
+    /**
+     * 获得文件占用的磁盘块的fat表内容
+     *
+     * @param fatTable  fat表
+     * @param diskBlock 文件所占的磁盘块
+     * @return fat内容
+     */
     public int getFileFatResult(DiskBlock[] fatTable, DiskBlock diskBlock) {
         int row = diskBlock.getIndex() / 128;
         int column = diskBlock.getIndex() % 128;
         return fileUtils.binaryToDec(fatTable[row].getBytes()[column].getDiskByte());
     }
 
-    public void cleanBlock(DiskBlock targetDiskBlock) {
-        for(int i=0;i<128;i++){
-            targetDiskBlock.getBytes()[i].setDiskByte("00000000");
-        }
-    }
     /**
-     * @return
+     * 获得完整的目录
+     * @param tables 装载目录的容器
+     * @param FATBlocks fat表
+     * @return 完整的目录
      */
     public ArrayList<Catalog> getFullCatalog(CatalogContainer tables, DiskBlock[] FATBlocks) {
         return getFullCatalog(tables.getTop(),FATBlocks);
     }
 
-    public ArrayList<Catalog> getFullCatalog(Catalog catalog ,DiskBlock[] FATBlocks){
+    /**
+     * 获得完整的目录
+     *
+     * @param catalog   目录，包含了它所占的磁盘号
+     * @param FATBlocks fat表
+     * @return 完整的目录
+     */
+    public ArrayList<Catalog> getFullCatalog(Catalog catalog, DiskBlock[] FATBlocks) {
         DiskService diskService = DiskService.getInstance();
         int nextFat;
         Catalog tmp;
@@ -179,7 +193,13 @@ public class FileUtils extends InstrUtils {
         return readingCatalog;
     }
 
-    public void modifyNextBlock(DiskBlock[] FATBlocks,DiskBlock targetDiskBlock) {
+    /**
+     * 修改fat表，使得文件消失
+     *
+     * @param FATBlocks       fat表
+     * @param targetDiskBlock 目标所占的磁盘块
+     */
+    public void modifyNextBlock(DiskBlock[] FATBlocks, DiskBlock targetDiskBlock) {
         int nextIndex = getNextBlockIndex(FATBlocks,targetDiskBlock);
         DiskService diskService = DiskService.getInstance();
         while (nextIndex!=1){

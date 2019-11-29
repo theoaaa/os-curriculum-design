@@ -11,8 +11,18 @@ public class CreateOperation extends AbstractOperation{
     private String[] entryContext = new String[8];
     private final int SIZE_PER_BLOCK = 128;
 
+    /**
+     * 创建目录项
+     *
+     * @param name         名字
+     * @param expandedName 扩展名
+     * @param attribute    属性
+     * @param startedIndex 文件起始地址
+     * @param size         大小
+     * @return 文件目录项
+     */
     public String[] getEntryContext(String name, String expandedName, String attribute, int startedIndex, int size) {
-        for(int i=0;i<3;i++){
+        for (int i = 0; i < 3; i++) {
             if(i<name.length()) {
                 entryContext[i] = fileUtils.decToBinary(name.charAt(i), 8);
             }else {
@@ -28,6 +38,12 @@ public class CreateOperation extends AbstractOperation{
         return entryContext;
     }
 
+    /**
+     * 设置文件内容
+     *
+     * @param context 文件内容
+     * @param block   文件所占用的磁盘块
+     */
     public void setFileContext(String[] context, DiskBlock block) {
         if (context != null) {
             DiskByte[] bytes = block.getBytes();
@@ -39,7 +55,7 @@ public class CreateOperation extends AbstractOperation{
             }
             if(length<SIZE_PER_BLOCK){
                 index++;
-                for(;index<SIZE_PER_BLOCK;index++){
+                for (; index < SIZE_PER_BLOCK; index++){
                     bytes[index].setDiskByte("00000000");
                 }
             }
