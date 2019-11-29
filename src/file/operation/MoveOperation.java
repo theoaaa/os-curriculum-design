@@ -43,6 +43,7 @@ public class MoveOperation extends AbstractOperation {
             } else {
                 newEntry.setContext(oldEntry.getContext());
             }
+            oldEntry.setEmpty();
         }
         return  statement;
     }
@@ -63,7 +64,7 @@ public class MoveOperation extends AbstractOperation {
     private String formatName(String name){
         StringBuilder nameBuilder = new StringBuilder(name);
         while (nameBuilder.length()<3){
-            nameBuilder.append(String.valueOf((char) 0));
+            nameBuilder.append((char) 0);
         }
         name = nameBuilder.toString();
         return name;

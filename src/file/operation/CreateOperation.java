@@ -38,6 +38,7 @@ public class CreateOperation extends AbstractOperation{
                 index = i;
             }
             if(length<SIZE_PER_BLOCK){
+                index++;
                 for(;index<SIZE_PER_BLOCK;index++){
                     bytes[index].setDiskByte("00000000");
                 }

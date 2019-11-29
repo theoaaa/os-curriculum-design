@@ -17,9 +17,6 @@ public class CatalogTest {
         FileService fileService = FileService.getInstance();
         FileUtils fileUtils = FileUtils.getInstance();
         System.out.println(fileService.createFile("C:", "D"," ", 64));
-        System.out.println(fileService.createFile("D:", "D"," ", 64));
-        System.out.println(fileService.createFile("E:", "D"," ", 64));
-        System.out.println(fileService.createFile("F:", "D"," ", 64));
         diskService.modifyDisk();
     }
 }

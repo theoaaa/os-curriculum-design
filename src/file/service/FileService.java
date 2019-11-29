@@ -1,6 +1,7 @@
 package file.service;
 
 import disk.bean.DiskBlock;
+import disk.bean.DiskByte;
 import disk.service.DiskService;
 import file.bean.Catalog;
 import file.bean.CatalogContainer;
@@ -24,6 +25,7 @@ public class FileService {
     private FileUtils fileUtils = FileUtils.getInstance();
     private CopyOperation copyOperation = new CopyOperation();
     private RootCatalog rootCatalog;
+    private CatalogEntry lastEntry;
     private FileService(){
         diskService = DiskService.getInstance();
         rootCatalog = new RootCatalog(diskService.getDiskBlock(2));
@@ -34,8 +36,6 @@ public class FileService {
     public RootCatalog getRootCatalog() {
         return rootCatalog;
     }
-    //catalog getEntries()
-    //for each entry getName
 
     /**
      * 前进方法
@@ -138,6 +138,7 @@ public class FileService {
             } else {
                 statement = deleteOperation.deleteFile(targetEntry, targetCatalog, FATBlocks);
             }
+            lastEntry.setSize(lastEntry.getSize()-8);
         }
         return statement;
     }
@@ -150,7 +151,11 @@ public class FileService {
      */
     public String[] openFile(String fileName,String expandedName){
         CatalogEntry targetEntry =  fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
-        System.out.println(targetEntry.getName()+"in openFile");
+        lastEntry = targetEntry;
+        Catalog targetCatalog = new Catalog(diskService.getDiskBlock(targetEntry.getStartedBlockIndex()));
+        if(expandedName.equals("D")) {
+            tables.setTop(targetCatalog);
+        }
         OpenOperation openOperation = new OpenOperation();
         return openOperation.open(FATBlocks,targetEntry);
     }
@@ -175,6 +180,7 @@ public class FileService {
             targetEntry.setContext(createOperation.getEntryContext(fileName, expandedName, attribute, getEmptyBlockIndex, size));
             fileUtils.modifyFAT(targetEntry.getStartedBlockIndex(),1,FATBlocks);
             statement = true;
+            diskService.modifyDisk();
         }
         return statement;
     }
@@ -191,6 +197,7 @@ public class FileService {
             targetEntry.setSize(fileContext.length);
             DiskBlock targetDiskBlock = diskService.getDiskBlock(targetEntry.getStartedBlockIndex());
             fileUtils.modifyNextBlock(FATBlocks,targetDiskBlock);
+            fileUtils.modifyFAT(targetDiskBlock.getIndex(),1,FATBlocks);
             for(int i=0;i*128<fileContext.length;i++){
                 boolean longer = false;
                 int contextLength;
@@ -198,19 +205,21 @@ public class FileService {
                     contextLength = 128;
                     longer = true;
                 }else{
-                    contextLength = (i+1)*128-fileContext.length;
+                    contextLength = fileContext.length-i*128;
                 }
+                String[] subStr = fileUtils.getSubContext(fileContext,i*128,i*128+contextLength);
+                createOperation.setFileContext(subStr,targetDiskBlock);
+                int result = fileUtils.getFileFatResult(FATBlocks,targetDiskBlock);
                 int nextBlockIndex;
-                if(fileUtils.getFileFatResult(FATBlocks,targetDiskBlock)!=1) {
+                if(result!=1) {
                     nextBlockIndex = longer ? fileUtils.getFileFatResult(FATBlocks,targetDiskBlock):1;
                 }else{
                     nextBlockIndex = longer ? fileUtils.getEmptyBlockIndex(FATBlocks) : 1;//新创建文件且length>128，后续的盘fatResult = 0
                 }
-                String[] subStr = fileUtils.getSubContext(fileContext,i*128,i*128+contextLength);
-                createOperation.setFileContext(subStr,targetDiskBlock);
                 fileUtils.modifyFAT(targetDiskBlock.getIndex(),nextBlockIndex,FATBlocks);
                 targetDiskBlock = diskService.getDiskBlock(nextBlockIndex);
             }
+            diskService.modifyDisk();
         }
     }
 
