@@ -12,7 +12,6 @@ import file.bean.CatalogEntry;
 public class OpenOperation extends AbstractOperation {
     private DiskService diskService;
     private String[] targetStr;
-    private  final  int SIZE_PER_BLOCK = 128;
     private int index = 0;
     public OpenOperation() {
          diskService = DiskService.getInstance();
@@ -36,8 +35,10 @@ public class OpenOperation extends AbstractOperation {
 
     private void getContext(int blockIndex){
         DiskByte[] bytes = diskService.getDiskBlock(blockIndex).getBytes();
-        System.out.println(targetStr.length);
-        for(int i=0;i<targetStr.length;i++){
+        for(int i=0;i<128;i++){
+            if(index==targetStr.length){
+                break;
+            }
             targetStr[index++] = bytes[i].getDiskByte();
         }
     }

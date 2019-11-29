@@ -44,13 +44,13 @@ public class FileUtils extends InstrUtils {
      * 获得小于等于一个磁盘块大小内容
      * @param source 原来的内容
      * @param startIndex 起始下标
-     * @param lastLength 终止下标
+     * @param lastIndex 终止下标
      * @return 串数组
      */
-    public String[] getSubContext(String[] source, int startIndex, int lastLength) {
-        String[] tmp = new String[lastLength - startIndex];
-        for (int i = 0; i < lastLength - startIndex; i++) {
-            tmp[i] = source[i];
+    public String[] getSubContext(String[] source, int startIndex, int lastIndex) {
+        String[] tmp = new String[lastIndex - startIndex];
+        for (int i = 0; i < lastIndex - startIndex; i++) {
+            tmp[i] = decToBinary(source[i].charAt(0),8);
         }
         return tmp;
     }
@@ -148,7 +148,6 @@ public class FileUtils extends InstrUtils {
     public int getFileFatResult(DiskBlock[] fatTable, DiskBlock diskBlock) {
         int row = diskBlock.getIndex() / 128;
         int column = diskBlock.getIndex() % 128;
-        System.out.println(row+" "+column);
         return fileUtils.binaryToDec(fatTable[row].getBytes()[column].getDiskByte());
     }
 

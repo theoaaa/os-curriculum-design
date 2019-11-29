@@ -39,7 +39,12 @@ public class CatalogContainer extends ArrayList<Catalog> {
     }
 
     public void setTop(Catalog catalog) {
-        this.set(presentIndex++, catalog);
+        if(presentIndex<size()) {
+            this.set(presentIndex++, catalog);
+        }else {
+            presentIndex++;
+            this.add(catalog);
+        }
     }
 
     public Catalog getRoot() {
