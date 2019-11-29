@@ -17,6 +17,13 @@ public class OpenOperation extends AbstractOperation {
          diskService = DiskService.getInstance();
     }
 
+    /**
+     * 打开文件
+     *
+     * @param fatTable    fat表
+     * @param targetEntry 目标的目录项
+     * @return 文件的完整内容
+     */
     public String[] open(DiskBlock[] fatTable, CatalogEntry targetEntry) {
         targetStr = new String[targetEntry.getSize()];
         int startIndex = targetEntry.getStartedBlockIndex();
@@ -33,9 +40,14 @@ public class OpenOperation extends AbstractOperation {
         return targetStr;
     }
 
+    /**
+     * 获取文件的内容
+     *
+     * @param blockIndex 磁盘块编号
+     */
     private void getContext(int blockIndex){
         DiskByte[] bytes = diskService.getDiskBlock(blockIndex).getBytes();
-        for(int i=0;i<128;i++){
+        for (int i = 0; i < 128; i++){
             if(index==targetStr.length){
                 break;
             }

@@ -17,7 +17,15 @@ public class MoveOperation extends AbstractOperation {
     private ArrayList<Catalog> oldFullCatalog;
     private ArrayList<Catalog> newFullCatalog;
     private DiskBlock[] FATBlocks;
-    public MoveOperation(String oldPath, String newPath,DiskBlock[] FATBlocks) {
+
+    /**
+     * 构造器
+     *
+     * @param oldPath   旧的路径
+     * @param newPath   新的路径
+     * @param FATBlocks fat表
+     */
+    public MoveOperation(String oldPath, String newPath, DiskBlock[] FATBlocks) {
         this.oldPath = oldPath.split("/");
         this.newPath = newPath.split("/");
         this.FATBlocks = FATBlocks;
@@ -25,7 +33,14 @@ public class MoveOperation extends AbstractOperation {
         newFullCatalog = getCatalogByPath(this.newPath,FATBlocks);
     }
 
-    public boolean moveFile(String fileName,String expandedName){
+    /**
+     * 移动文件
+     *
+     * @param fileName     文件名字
+     * @param expandedName 扩展名
+     * @return 移动是否成功
+     */
+    public boolean moveFile(String fileName, String expandedName) {
         DeleteOperation deleteOperation = new DeleteOperation();
         CatalogEntry oldEntry = fileUtils.getTargetEntryByCatalog(fileName,expandedName,oldFullCatalog);
         deleteOperation.modifyCatalog(oldEntry,oldFullCatalog);
@@ -48,7 +63,14 @@ public class MoveOperation extends AbstractOperation {
         return  statement;
     }
 
-    private ArrayList<Catalog> getCatalogByPath(String[] path,DiskBlock[] FATBlocks){
+    /**
+     * 通过路径来获取目录
+     *
+     * @param path      路径
+     * @param FATBlocks fat表
+     * @return 完整目录
+     */
+    private ArrayList<Catalog> getCatalogByPath(String[] path, DiskBlock[] FATBlocks){
         DiskService diskService = DiskService.getInstance();
         Catalog rootCatalog = new Catalog(diskService.getDiskBlock(2));
         ArrayList<Catalog> tmpFullCatalog;

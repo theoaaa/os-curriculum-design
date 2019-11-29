@@ -4,7 +4,6 @@ import disk.bean.DiskBlock;
 import disk.bean.DiskByte;
 import disk.service.DiskService;
 import file.bean.Catalog;
-import file.bean.CatalogContainer;
 import file.bean.CatalogEntry;
 
 import java.util.ArrayList;
@@ -14,6 +13,14 @@ import java.util.ArrayList;
  * @date 2019/11/11 12:36
  */
 public class DeleteOperation extends AbstractOperation{
+    /**
+     * 删除文件
+     *
+     * @param targetEntry   目标文件的目录项
+     * @param targetCatalog 目标文件所在的目录
+     * @param FATBlocks     fat表
+     * @return 文件是否被删除
+     */
     public boolean deleteFile(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog, DiskBlock[] FATBlocks){
         int startIndex = targetEntry.getStartedBlockIndex();
         boolean statement = modifyCatalog(targetEntry,targetCatalog);
@@ -26,6 +33,14 @@ public class DeleteOperation extends AbstractOperation{
         return statement;
     }
 
+    /**
+     * 删除文件夹
+     *
+     * @param targetEntry   目标文件的目录项
+     * @param targetCatalog 目标文件所在的目录
+     * @param FATBlocks     fat表
+     * @return 文件夹是否被删除
+     */
     public boolean deleteDirectory(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog, DiskBlock[] FATBlocks){
         DiskService diskService = DiskService.getInstance();
         Catalog dir = new Catalog(diskService.getDiskBlock(targetEntry.getStartedBlockIndex()));//文件夹目录，即文件夹自己的内容
@@ -45,7 +60,14 @@ public class DeleteOperation extends AbstractOperation{
         return modifyCatalog(targetEntry,targetCatalog);
     }
 
-    public boolean modifyCatalog(CatalogEntry targetEntry,ArrayList<Catalog> targetCatalog){
+    /**
+     * 修改文件目录
+     *
+     * @param targetEntry   目标目录项
+     * @param targetCatalog 目标目录
+     * @return 修改结果
+     */
+    boolean modifyCatalog(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog){
         int targetIndex = -1;
         int endIndex = -1;
         boolean endFlag = false;

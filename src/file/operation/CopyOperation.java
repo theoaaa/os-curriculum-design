@@ -22,6 +22,12 @@ public class CopyOperation extends AbstractOperation {
         this.entry = entry;
     }
 
+    /**
+     * 获得文件内容
+     *
+     * @param FATBlocks fat表
+     * @return 文件的所有内容
+     */
     public String[] getFileContext(DiskBlock[] FATBlocks) {
         DiskService diskService = DiskService.getInstance();
         ArrayList<DiskBlock> context = new ArrayList<>();

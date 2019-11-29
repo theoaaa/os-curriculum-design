@@ -37,13 +37,27 @@ public class FileService {
     }
 
     /**
-     * 前进方法
-     * @param fileName 文件夹名字
-     * @return 目录
+     * 每一次关闭文件的界面都要调用这个方法
      */
-    public String[] forward(String fileName){
-        tables.forward();
-        return openFile(fileName,"D");
+    public void closeMethod() {
+        diskService.modifyDisk();
+    }
+
+    /**
+     * 获得磁盘块使用情况
+     *
+     * @return 多少个磁盘块被使用
+     */
+    public int getDiskUsedStatus() {
+        int cnt = 0;
+        for (int i = 0; i < 2; i++) {
+            for (DiskByte tmp : FATBlocks[i].getBytes()) {
+                if (!tmp.getDiskByte().equals("00000000")) {
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
     }
 
     /**
@@ -57,8 +71,8 @@ public class FileService {
 
     /**
      * 改变文件扩展名
-     * @param fileName
-     * @param expandedName
+     * @param fileName 文件名
+     * @param expandedName 扩展名
      */
     public void changeFileAttribute(String fileName,String expandedName){
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
@@ -72,18 +86,42 @@ public class FileService {
             }
         }
     }
+
     /**
      * 复制文件方法
      * @param fileName 文件名
      * @param expandedName 文件拓展名
      */
-    public void copyFile(String fileName,String expandedName){
+    public void copyFile(String fileName, String expandedName) {
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
         copyOperation.setEntry(targetEntry);
     }
 
     /**
+     * 判断黏贴板中是否有合适的目录项，如果有就可以赋值
+     *
+     * @return 是否能够黏贴
+     */
+    public boolean copyable() {
+        boolean statement = true;
+        if (copyOperation.getEntry() != null) {
+            statement = false;
+        }
+        return statement;
+    }
+
+    /**
+     * 格式化磁盘的方法
+     *
+     * @return 格式化的情况
+     */
+    public boolean formatDisk() {
+        return diskService.formatDisk();
+    }
+
+    /**
      * 黏贴文件方法
+     * @return 黏贴是否成功
      */
     public boolean pasteFile(){
         CatalogEntry entry = copyOperation.getEntry();
@@ -91,11 +129,20 @@ public class FileService {
         if(statement) {
             String[] context = copyOperation.getFileContext(FATBlocks);
             saveFile(entry.getName(), entry.getExpandedName(), context);
+            copyOperation.setEntry(null);
         }
         return statement;
     }
 
-    public boolean renameFile(String oldFileName,String oldExpandedName,String newName){
+    /**
+     * 重命名方法
+     *
+     * @param oldFileName     旧的文件名
+     * @param oldExpandedName 旧的扩展名，和旧的文件名一起用于寻找目录项
+     * @param newName         新的文件名，和旧的扩展名一起用于判断是否存在重名
+     * @return 重命名的结果
+     */
+    public boolean renameFile(String oldFileName, String oldExpandedName, String newName) {
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(newName,oldExpandedName,tables,FATBlocks);
         boolean statement = false;
         if(targetEntry.isEmpty()){
@@ -178,7 +225,6 @@ public class FileService {
             targetEntry.setContext(createOperation.getEntryContext(fileName, expandedName, attribute, getEmptyBlockIndex, size));
             fileUtils.modifyFAT(targetEntry.getStartedBlockIndex(),1,FATBlocks);
             statement = true;
-            diskService.modifyDisk();
         }
         return statement;
     }
@@ -217,10 +263,8 @@ public class FileService {
                 fileUtils.modifyFAT(targetDiskBlock.getIndex(),nextBlockIndex,FATBlocks);
                 targetDiskBlock = diskService.getDiskBlock(nextBlockIndex);
             }
-            diskService.modifyDisk();
         }
     }
-
 
     /**
      * 单例模式

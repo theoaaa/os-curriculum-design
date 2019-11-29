@@ -1,6 +1,7 @@
 package disk.service;
 
 import disk.bean.DiskBlock;
+import disk.bean.DiskByte;
 import disk.util.DiskUtils;
 
 import java.util.ArrayList;
@@ -64,15 +65,16 @@ public class DiskService {
         return statusList;
     }
 
-    public void formatDisk(){
-        for(int i=0;i<BLOCKS_SIZE;i++){
-            for(int j=0;j<128;j++){
-                blocks.get(i).getBytes()[j].setDiskByte("00000000");
+    public boolean formatDisk() {
+        for (int i = 0; i < 2; i++) {
+            for (DiskByte tmpByte : fatBlocks[i].getBytes()) {
+                tmpByte.setDiskByte("00000000");
             }
         }
-        blocks.get(0).getBytes()[0].setDiskByte("00000001");
-        blocks.get(0).getBytes()[1].setDiskByte("00000001");
-        blocks.get(0).getBytes()[2].setDiskByte("00000001");
+        fatBlocks[0].getBytes()[0].setDiskByte("00000001");
+        fatBlocks[0].getBytes()[1].setDiskByte("00000001");
+        fatBlocks[0].getBytes()[2].setDiskByte("00000001");
+        return true;
     }
     /**
      * 获取磁盘块
