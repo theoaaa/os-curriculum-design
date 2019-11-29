@@ -15,8 +15,8 @@ public class ViewUtils {
         // Traditional way to get the response value.
         Optional<String> name = dialog.showAndWait();
         if (name.isPresent()){
-            if(name.equals("")){
-                System.out.println(name.get());
+            if(!name.equals("")){
+                System.out.println("ViewUtils.getName() 's name.get():" + name.get());
                 return name.get();
             }
         }

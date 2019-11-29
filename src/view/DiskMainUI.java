@@ -4,6 +4,7 @@ import disk.service.DiskService;
 import file.bean.CatalogEntry;
 import file.bean.RootCatalog;
 import file.service.FileService;
+import file.util.FileUtils;
 import instruction.service.InstrService;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
@@ -31,6 +32,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class DiskMainUI extends Application {
+    FileUtils fileUtils = FileUtils.getInstance();
     DiskService diskService = DiskService.getInstance();
     FileService fileService = FileService.getInstance();
     InstrService instrService = InstrService.getInstrService();
@@ -186,6 +188,7 @@ public class DiskMainUI extends Application {
             flowPane.getChildren().add(backVBox);
             flowPane.getChildren().add(diskVBox);
 
+            //加载根目录下的主文件
             CatalogEntry[] catalogEntries = rootCatalog.getEntries();
             for(CatalogEntry ce:catalogEntries){
                 if (!ce.isEmpty()){
@@ -253,8 +256,8 @@ public class DiskMainUI extends Application {
                 public void handle(ActionEvent event) {
                     //创建新的stage  从event里面获得按钮
                     String name = choicedNodeName;
-                    System.out.println("ViewUtils.getFirstName(name),ViewUtils.getExtendName(name)---" + ViewUtils.getFirstName(name).trim() + "," + ViewUtils.getExtendName(name));
-                    String[] inFile = fileService.openFile(ViewUtils.getFirstName(name).trim(),ViewUtils.getExtendName(name));
+                    System.out.println("ViewUtils.getFirstName(name),ViewUtils.getExtendName(name)---"
+                            + ViewUtils.getFirstName(name).trim() + "," + ViewUtils.getExtendName(name));
                     //if(fileNode != null){
                     if(true){
                         System.out.println("存在");
@@ -274,6 +277,7 @@ public class DiskMainUI extends Application {
                                 }
                             });
                             //upsetUI(name,pane1);//文件夹显示
+                            loadUI(name,fileDirPane);
                             Scene fileDirScene = new Scene(fileDirPane, 300, 200);
                             fileDirStage.setScene(fileDirScene);
                             fileDirStage.show();
@@ -283,7 +287,14 @@ public class DiskMainUI extends Application {
                             System.out.println("打开的是文本文件");
                             Stage txtFileStage = new Stage();
                             //String txtString=sys.read(node); //获取文本文件
-                            String txtString = "这里获取文本文件";
+                            String[] inFile = fileService.openFile(ViewUtils.getFirstName(name),ViewUtils.getExtendName(name));
+
+                            String txtString = "";
+                            for(int i=0;i<inFile.length;i++) {
+                                //System.out.println("binaryToDec test:"+(char)fileUtils.binaryToDec(fileNames[i]));
+                                txtString += Character.toString((char) fileUtils.binaryToDec(inFile[i]));
+                                System.out.println("文本文件txtString:" + txtString);
+                            }
                             BorderPane txtFileBorderPane = new BorderPane();
                             TextArea txtTextArea = new TextArea();
                             txtTextArea.setText(txtString);
@@ -295,12 +306,22 @@ public class DiskMainUI extends Application {
                                 public void handle(MouseEvent event) {
                                     //public void saveTextFile(String textInArea,String actualPath){} //保存文本文件
                                     String textInArea = txtTextArea.getText();
-                                    ArrayList<String> outTxtFile = new ArrayList<>();
+                                    //ArrayList<String> outTxtFile = new ArrayList<>();
+                                    String[] outString = new String[10000];
+                                    int index = 0;
                                     char[] textChar = textInArea.toCharArray();
                                     for(char c:textChar){
-                                        outTxtFile.add(Character.toString(c));
+                                        //outTxtFile.add(Character.toString(c));
+                                        outString[index++] = Character.toString(c);
                                     }
-                                    fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",(String[])outTxtFile.toArray());
+                                    String[] outStringFinal = new String[index];
+                                    for(int i=0;i<index;i++){
+                                        outStringFinal[i] = outString[i];
+                                    }
+                                    System.out.println("outStringFinal:" + outStringFinal[0] + "," + outStringFinal[index-1]);
+                                    System.out.println("ViewUtils.getFirstName(choicedNodeName)" + ViewUtils.getFirstName(choicedNodeName));
+                                    //fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",(String[])outTxtFile.toArray());
+                                    fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",outStringFinal);
                                     txtFileStage.close();
                                 }
                             });
@@ -338,6 +359,8 @@ public class DiskMainUI extends Application {
                         if (aString.equals(choicedNodeName)) {
                             choicedNodePane.getChildren().remove(aNode);
                             //sys.delete(choicedNodeName);  //删除文件
+                            if(!fileService.deleteFile(ViewUtils.getFirstName(choicedNodeName),ViewUtils.getExtendName(choicedNodeName)))
+                                ViewUtils.showAlter("删除失败！");
                             break;
                         }
                     }
@@ -348,9 +371,10 @@ public class DiskMainUI extends Application {
                 @Override
                 public void handle(ActionEvent event) {
                     String name = ViewUtils.getName();
+                    System.out.println("ViewUtils.getName() in newTxtFileMenuItem:" + name);
                     VBox aVBox = fileUI(name+".txt","T");
-                    fileService.createFile(name,"T","W",0);
                     choicedNodePane.getChildren().add(aVBox);
+                    fileService.createFile(name,"T","W",0);
                 }
             });
 
@@ -580,10 +604,21 @@ public class DiskMainUI extends Application {
     //怎么获得文件夹中文件的类型？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
     private void loadUI(String name,Pane pane){//打开文件夹，目录加载方法
     // name:带后缀的全名
-        String[] fileNames = fileService.openFile(ViewUtils.getFirstName(name),"D");
-        for(String aString:fileNames){
-            VBox vBox = fileUI(aString,ViewUtils.getExtendName(aString));
-            pane.getChildren().add(vBox);
+        String[] fileNames = fileService.openFile(ViewUtils.getFirstName(name).trim(),"D");
+        String firstName = "";
+        for(int i=0;i<fileNames.length;i+=8){
+            //System.out.println("binaryToDec test:"+(char)fileUtils.binaryToDec(fileNames[i]));
+            firstName = Character.toString((char)fileUtils.binaryToDec(fileNames[i]))
+                    + Character.toString((char)fileUtils.binaryToDec(fileNames[i+1]))
+                    + Character.toString((char)fileUtils.binaryToDec(fileNames[i+2]));
+            System.out.println("loadUI 's firstName:" + firstName + ",,extendName:"
+                    + Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])));
+            if (Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])).equals("D")
+                    ||Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])).equals("T")
+                    ||Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])).equals("E")){
+                VBox vBox = fileUI(firstName,fileNames[i+3]);
+                pane.getChildren().add(vBox);
+            }
         }
     }
     /*
