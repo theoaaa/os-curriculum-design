@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import view.deviceManagement.DeviceManagementWindow;
+import view.memoryManagement.MemoryManagementWindow;
 import view.processManagement.ProcessManagementWindow;
 
 import javax.swing.text.html.ImageView;
@@ -40,7 +42,7 @@ public class HomeController {
         iconBox.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                iconBox.setStyle("-fx-background-color: #eee; -fx-opacity: 0.6;");
+                iconBox.setStyle("-fx-background-color: #e6e6e6; -fx-opacity: 0.8;");
             }
         });
 
@@ -64,12 +66,14 @@ public class HomeController {
 
     @FXML
     private void openDeviceManagement() {
-
+        DeviceManagementWindow window = DeviceManagementWindow.getInstance();
+        window.show();
     }
 
     @FXML
     private void openStorageManagement() {
-
+        MemoryManagementWindow window = MemoryManagementWindow.getInstance();
+        window.show();
     }
 
     @FXML
