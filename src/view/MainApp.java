@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import model.processManege.CPU;
+import view.home.HomeController;
 import view.processManagement.ProcessManagementController;
 
 import java.io.IOException;
@@ -33,8 +34,10 @@ public class MainApp extends Application {
      */
     public void initRootLayout() {
         try {
-            // Load root layout from fxml file.
-            rootLayout = (AnchorPane) FXMLLoader.load(MainApp.class.getResource("home/home.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("home/home.fxml"));
+            rootLayout = (AnchorPane) loader.load();
+            HomeController controller = loader.getController();
+            controller.setPrimaryStage(primaryStage);
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);

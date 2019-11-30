@@ -40,12 +40,6 @@ public class  ProcessManagementController {
         readyListView.setItems(readyList);
         blockingListView.setItems(blockingList);
 
-
-
-        processId.setText("0000");
-        implementingCommand.setText("add x,y");
-        implementResolve.setText("4");
-        remainTimePart.setText("2");
     }
 
     /**
