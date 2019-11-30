@@ -74,7 +74,7 @@ public class  ProcessManagementController {
 
         blockingList.clear();
         for (PCB blockingPCB : PCB.getBlockedProcessPCBList()) {
-            blockingList.add(blockingPCB.getProcessID().toString());
+            blockingList.add(blockingPCB.getProcessID().toString() + "；还需等待：" );
         }
     }
 

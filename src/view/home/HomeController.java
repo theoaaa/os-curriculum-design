@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.processManege.CPU;
 import view.deviceManagement.DeviceManagementWindow;
 import view.memoryManagement.MemoryManagementWindow;
 import view.processManagement.ProcessManagementWindow;
@@ -85,6 +86,7 @@ public class HomeController {
     @FXML
     private void exit() {
         primaryStage.close();
+        CPU.shutdown();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
