@@ -30,11 +30,16 @@ public class DeviceManagementController {
     @FXML TextField BWaitingList;
     @FXML TextField CWaitingList;
     public void initialize(){
+        aWaitingList = DeviceAllocation.getAWaitingList();
+        bWaitingList = DeviceAllocation.getBWaitingList();
+        cWaitingList = DeviceAllocation.getCWaitingList();
+        deviceList = DeviceAllocation.getDeviceUsage();
          updateMessage();
     }
 
     // 初始化/更新数据
     public void updateMessage(){
+
         // 显示正在使用的设备
         if(deviceList.size() >= 7){
             A01.setText(deviceList.get(0).getPcb().getProcessID()+"");

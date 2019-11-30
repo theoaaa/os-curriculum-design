@@ -127,7 +127,8 @@ public class DeviceAllocation {
         map.put(pcb, device);
         procList.add(pcb);
         // 更新界面显示
-        controller.updateMessage();
+        if (controller != null)
+            controller.updateMessage();
     }
 
     // 线程中断，模拟设备使用期间IO
@@ -193,7 +194,8 @@ public class DeviceAllocation {
                 break;
         }
         // 更新界面显示
-        controller.updateMessage();
+        if (controller != null)
+            controller.updateMessage();
     }
 
     // 返回设备使用列表

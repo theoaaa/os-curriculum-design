@@ -21,12 +21,13 @@ public class ProcessMemoryBlock {
 
     }
 
-    public ProcessMemoryBlock(int memorySize, int startAddr, int endAddr, PCB pcb, boolean next) {
+    public ProcessMemoryBlock(int memorySize, int startAddr, int endAddr, PCB pcb, boolean next, double takeupRatio) {
         this.memorySize = memorySize;
         this.startAddr = startAddr;
         this.endAddr = endAddr;
         this.pcb = pcb;
         this.next = next;
+        this.takeupRatio = takeupRatio;
     }
 
     public int getMemorySize() {

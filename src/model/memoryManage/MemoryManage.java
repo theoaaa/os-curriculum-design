@@ -57,6 +57,7 @@ public class MemoryManage {
         processMemory.setEndAddr(processMemory.getStartAddr() + allocSize -1);
         processMemory.setPcb(pcb);
         processMemory.setMemorySize(allocSize);
+        processMemory.setTakeupRatio((double) allocSize/memorySize);
         processMemoryAllocatedList.add(allocateResult, processMemory);
         map.put(pcb, processMemory);
         for (int i=processMemory.getStartAddr(); i <= processMemory.getEndAddr(); i++){
@@ -64,7 +65,8 @@ public class MemoryManage {
         }
         pcbMemory.add(pcb);
         // 更新界面显示
-        controller.updateMessage(processMemoryAllocatedList);
+        if (controller != null)
+            controller.updateMessage(processMemoryAllocatedList);
         System.out.println("内存分配成功.");
         return true;
     }
@@ -124,7 +126,8 @@ public class MemoryManage {
         pcbMemory.remove(pcb);
 
         // 更新界面显示
-        controller.updateMessage(processMemoryAllocatedList);
+        if (controller != null)
+            controller.updateMessage(processMemoryAllocatedList);
     }
 
     public static void show(){
