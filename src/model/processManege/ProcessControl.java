@@ -43,7 +43,7 @@ public class ProcessControl {
                 waitingExecutableFilePathQueue.add(executableFile);
             }
         }else {
-            //pcb以达到10个
+            //pcb已达到10个
             waitingExecutableFilePathQueue.add(executableFile);
         }
         return pcb;
@@ -58,11 +58,14 @@ public class ProcessControl {
             PCB.getEmptyPCBList().add(pcb);
         }
     }
+    
     public static void block(PCB pcb, int blockReason){
         pcb.setProcessState(PCB.BLOCK);
+        pcb.setProcessBlockTime(CPU.getSystemTime());
         pcb.setProcessBlockReason(blockReason);
         PCB.getBlockedProcessPCBList().add(pcb);
     }
+
     public static void awake(PCB pcb){
         PCB.getBlockedProcessPCBList().remove(pcb);
         pcb.resetRestTime();
