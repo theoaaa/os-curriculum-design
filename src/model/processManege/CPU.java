@@ -249,6 +249,11 @@ public class CPU {
         }
     }
 
+    //关机
+    public static void shutdown(){
+        cachedThreadPool.shutdown();
+    }
+    //测试方法
     public static void work() {
         ProcessControl.create(new File("resources/test.e"));
         ProcessControl.create(new File("resources/test.e"));
