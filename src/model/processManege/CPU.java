@@ -96,43 +96,6 @@ public class CPU {
             //解析并执行指令
             private void executeInstruction(String instruction, PCB pcb) {
                 ++CPU.systemTime;
-//                if (instruction.startsWith("000")) {
-//                    //执行end
-//                    pcb.setProcessState(PCB.END);
-////                    System.out.println(pcb.getProcessState());
-////                    System.out.println(pcb);
-//                    pcb.setIntermediateResult("程序执行结束");
-//                } else if (instruction.startsWith("001")) {
-//                    //执行x++
-//                    String i = instruction.substring(3, 5);
-//                    int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
-//                    reg[regNum]++;
-//                    pcb.setIntermediateResult("reg" + regNum + " = " + reg[regNum]);
-//                } else if (instruction.startsWith("010")) {
-//                    //执行x--
-//                    String i = instruction.substring(3, 5);
-//                    int regNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
-//                    reg[regNum]--;
-//                    pcb.setIntermediateResult("reg" + regNum + " = " + reg[regNum]);
-//                } else if (instruction.startsWith("100")) {
-//                    //申请控制设备
-//                    String i = instruction.substring(3, 5);
-//                    int equipmentNum = StringUtil.parseBinaryToDecimal(Integer.parseInt(i));
-//                    //发起申请设备信号
-//                    // *************
-//                    // *************
-//                    // *************
-//                    pcb.setIntermediateResult("进程" + pcb.getProcessID() + "申请设备" + equipmentNum);
-//                    psw.setIOInterrupt(true);
-//                } else if (instruction.startsWith("110")) {
-//                    //给x赋值
-//                    int regIndex = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(3, 5)));
-//                    int value = StringUtil.parseBinaryToDecimal(Integer.parseInt(instruction.substring(5)));
-//                    reg[regIndex] = value;
-//                    pcb.setIntermediateResult("reg" + regIndex + " = " + value);
-//                } else {
-//                    pcb.setIntermediateResult("指令错误！");
-//                }
                 switch (instruction.substring(0, 3)) {
                     case "000":
                         //执行end
@@ -200,22 +163,6 @@ public class CPU {
                 } else if (psw.isIOInterrupt()) {
                     //执行IO操作，进入阻塞队列，IO_BLOCK_TIME时间后从阻塞队列回到就绪队列
                     ProcessControl.block(pcb, PCB.IO_INTERRUPT);
-                    /*
-                    XXX
-                    模拟执行io操作，交由设备管理实现
-                     */
-//                    cachedThreadPool.submit(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            //进程休眠模拟执行IO操作
-//                            try {
-//                                Thread.sleep(IO_BLOCK_TIME);
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                            ProcessControl.awake(pcb);
-//                        }
-//                    });
                 } else if (psw.isTimeSliceUsedUp()) {
                     pcb.resetRestTime();
                     PCB.getReadyProcessPCBList().add(pcb);

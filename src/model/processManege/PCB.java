@@ -18,7 +18,6 @@ public class PCB {
 
     //进程队列
     private static List<PCB> emptyPCBList = new LinkedList<>();
-    private static List<PCB> allPCBList = new LinkedList<>();
     private static List<PCB> readyProcessPCBList = new LinkedList<>();
     private static List<PCB> blockedProcessPCBList = new LinkedList<>();
 
@@ -31,6 +30,7 @@ public class PCB {
     private int restTime;
     private int processState;
     private int processBlockReason;
+    private int processBlockTime;
 
     private List<String> processInstructions;
     private int currentInstructionIndex;
@@ -42,7 +42,6 @@ public class PCB {
             PCB pcb = new PCB();
             pcb.pcbId = pcbId;
             emptyPCBList.add(pcb);
-            allPCBList.add(pcb);
         }
     }
 
@@ -159,12 +158,12 @@ public class PCB {
         this.pcbId = pcbId;
     }
 
-    public static List<PCB> getAllPCBList() {
-        return allPCBList;
+    public int getBlockedTime(){
+        return CPU.getSystemTime() - this.processBlockTime;
     }
 
-    public static void setAllPCBList(List<PCB> allPCBList) {
-        PCB.allPCBList = allPCBList;
+    public void setProcessBlockTime(int processBlockTime) {
+        this.processBlockTime = processBlockTime;
     }
 
     @Override
