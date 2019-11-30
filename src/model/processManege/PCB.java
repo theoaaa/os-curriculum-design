@@ -1,6 +1,5 @@
-package model;
+package model.processManege;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,15 +17,17 @@ public class PCB {
     public static final int IO_INTERRUPT = 1;
 
     //进程队列
-    private static List<PCB> EmptyPCBList = new LinkedList<>();
-    private static List<PCB> ReadyProcessPCBList = new LinkedList<>();
-    private static List<PCB> BlockedProcessPCBList = new LinkedList<>();
+    private static List<PCB> emptyPCBList = new LinkedList<>();
+    private static List<PCB> allPCBList = new LinkedList<>();
+    private static List<PCB> readyProcessPCBList = new LinkedList<>();
+    private static List<PCB> blockedProcessPCBList = new LinkedList<>();
 
     //保存寄存器组数据
     private Integer registers[] = new Integer[4];
 
     //PCB属性
-    private String processID;
+    private int pcbId;
+    private Integer processID;
     private int restTime;
     private int processState;
     private int processBlockReason;
@@ -37,9 +38,11 @@ public class PCB {
 
     //初始化进程队列
     static {
-        int pcbTotalNumber = 10;
-        while(pcbTotalNumber-->0){
-            EmptyPCBList.add(new PCB());
+        for(int pcbId = 0; pcbId < 10; pcbId++){
+            PCB pcb = new PCB();
+            pcb.pcbId = pcbId;
+            emptyPCBList.add(pcb);
+            allPCBList.add(pcb);
         }
     }
 
@@ -54,7 +57,7 @@ public class PCB {
         this.restTime = CPU.timeSliceLength;
     }
 
-    public void initPCBToReady(String processID){
+    public void initPCBToReady(int processID){
         this.processID = processID;
         this.restTime = CPU.timeSliceLength;
         for(int i = 0; i < 4; ++ i){
@@ -64,12 +67,15 @@ public class PCB {
 
     public void clearPCBToBlank(){
         this.restTime = 0;
-        this.processID = "";
+        this.processID = null;
         this.currentInstructionIndex = 0;
         this.intermediateResult = "";
         this.processBlockReason = NOT_BLOCKED;
         this.processState = BLANK;
         this.processInstructions = null;
+        for(int i = 0; i < 4; ++ i){
+            this.registers[i] = new Integer(0);
+        }
     }
 
     public void decreaseRestTime() {
@@ -84,7 +90,7 @@ public class PCB {
     }
 
     // getter & setter
-    public String getProcessID() {
+    public Integer getProcessID() {
         return processID;
     }
 
@@ -93,15 +99,15 @@ public class PCB {
     }
 
     public static List<PCB> getEmptyPCBList() {
-        return EmptyPCBList;
+        return emptyPCBList;
     }
 
     public static List<PCB> getReadyProcessPCBList() {
-        return ReadyProcessPCBList;
+        return readyProcessPCBList;
     }
 
     public static List<PCB> getBlockedProcessPCBList() {
-        return BlockedProcessPCBList;
+        return blockedProcessPCBList;
     }
 
     public int getProcessState() {
@@ -134,7 +140,7 @@ public class PCB {
         return restTime==0;
     }
     public boolean isProcessEnd(){
-        return processInstructions==null || currentInstructionIndex == processInstructions.size();
+        return processState == PCB.END || processInstructions==null || currentInstructionIndex == processInstructions.size();
     }
 
     public List<String> getProcessInstructions() {
@@ -145,6 +151,22 @@ public class PCB {
         this.processInstructions = processInstructions;
     }
 
+    public int getPcbId() {
+        return pcbId;
+    }
+
+    public void setPcbId(int pcbId) {
+        this.pcbId = pcbId;
+    }
+
+    public static List<PCB> getAllPCBList() {
+        return allPCBList;
+    }
+
+    public static void setAllPCBList(List<PCB> allPCBList) {
+        PCB.allPCBList = allPCBList;
+    }
+
     @Override
     public String toString() {
         return "PCB{" +
@@ -153,7 +175,6 @@ public class PCB {
                 ", restTime=" + restTime +
                 ", processState=" + processState +
                 ", processBlockReason=" + processBlockReason +
-                ", processInstructions=" + processInstructions +
                 ", currentInstructionIndex=" + currentInstructionIndex +
                 ", intermediateResult='" + intermediateResult + '\'' +
                 '}';

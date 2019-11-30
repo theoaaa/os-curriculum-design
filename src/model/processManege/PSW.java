@@ -1,4 +1,4 @@
-package model;
+package model.processManege;
 
 public class PSW {
     private boolean processEnd;

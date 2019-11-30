@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.deviceManagement.DeviceManagementController">
+   <children>
+      <Pane fx:id="aWaitingList" prefHeight="400.0" prefWidth="800.0">
+         <children>
+            <Label layoutX="53.0" layoutY="73.0" text="设备A" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="233.0" text="设备B" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="193.0" text="设备B" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="153.0" text="设备B" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="113.0" text="设备A" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="310.0" text="设备C" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="273.0" text="设备C" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="355.0" text="设备C" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="189.0" layoutY="26.0" text="进程（使用中）" textFill="#a19393">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="430.0" layoutY="26.0" text="进程（等待使用）" textFill="#a19393">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Text fx:id="A01" fontSmoothingType="LCD" layoutX="189.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <TextField fx:id="AWaitingList" editable="false" layoutX="430.0" layoutY="73.0" prefHeight="62.0" prefWidth="340.0" />
+            <Text fx:id="A02" fontSmoothingType="LCD" layoutX="189.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fx:id="B01" fontSmoothingType="LCD" layoutX="189.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fx:id="B02" fontSmoothingType="LCD" layoutX="189.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fx:id="B03" fontSmoothingType="LCD" layoutX="189.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fx:id="C01" fontSmoothingType="LCD" layoutX="189.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fx:id="C02" fontSmoothingType="LCD" layoutX="189.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <Text fx:id="C03" fontSmoothingType="LCD" layoutX="189.0" layoutY="372.0" strokeType="OUTSIDE" strokeWidth="0.0" text="aaa" wrappingWidth="165.30029296875">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <TextField fx:id="BWaitingList" editable="false" layoutX="430.0" layoutY="153.0" prefHeight="99.0" prefWidth="340.0" />
+            <TextField fx:id="CWaitingList" editable="false" layoutX="430.0" layoutY="272.0" prefHeight="99.0" prefWidth="340.0" />
+            <Line endX="800.0" layoutY="143.0" />
+            <Line endX="800.0" layoutY="263.0" />
+            <Line endX="800.0" layoutY="61.0" />
+            <Line endX="140.0" endY="400.0" startX="140.0" />
+            <Line endX="350.0" endY="400.0" startX="350.0" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
