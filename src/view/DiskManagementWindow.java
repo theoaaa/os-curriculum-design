@@ -127,7 +127,6 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(MouseEvent event) {
                     choicedNodePane = flowPane;
-                    System.out.println("点击了diskBorderPane");
                 }
             });
 
@@ -147,7 +146,6 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(MouseEvent event) {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
-                        System.out.println("选中了磁盘图标");
                         Stage stage5=new Stage();
                         BorderPane pn=new BorderPane();
                         int sumDisk = 128*256;//总磁盘量
@@ -209,7 +207,6 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(MouseEvent event) {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
-                        System.out.println("选中了返回按钮");
                         primaryStage.close();
                         fileService.closeMethod();
                     }
@@ -232,7 +229,6 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(MouseEvent event) {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
-                        System.out.println("选中了格式化按钮");
                         fileService.formatDisk();
                     }
                 }
@@ -247,7 +243,6 @@ public class DiskManagementWindow extends Application {
             for(CatalogEntry ce:catalogEntries){
                 if (!ce.isEmpty()){
                     String cataName = ce.getName();
-                    System.out.println("cataName:" + cataName);
                     VBox aVBox = fileUI(cataName+".dir","D");
                     aVBox.addEventHandler(ContextMenuEvent.ANY, nodeRightClickedEvent);
                     // choicedNodePane.getChildren().add(aVBox);
@@ -337,10 +332,9 @@ public class DiskManagementWindow extends Application {
                                 @Override
                                 public void handle(MouseEvent event) {
                                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
-                                        System.out.println("选中了" + name + " 中返回按钮");
                                         //pane_close
                                         fileDirStage.close();
-                                        fileService.backward();
+//                                        fileService.backward();
                                         fileService.closeMethod();
                                     }
                                 }
@@ -348,16 +342,13 @@ public class DiskManagementWindow extends Application {
                         }
                         else if(ViewUtils.getExtendName(name).equals("T")){
                             //打开的是文本文件
-                            System.out.println("打开的是文本文件");
                             Stage txtFileStage = new Stage();
                             //获取文本文件
                             String[] inFile = fileService.openFile(ViewUtils.getFirstName(name),ViewUtils.getExtendName(name));
 
                             String txtString = "";
                             for(int i=0;i<inFile.length;i++) {
-                                //System.out.println("binaryToDec test:"+(char)fileUtils.binaryToDec(fileNames[i]));
                                 txtString += Character.toString((char) fileUtils.binaryToDec(inFile[i]));
-                                System.out.println("文本文件txtString:" + txtString);
                             }
                             BorderPane txtFileBorderPane = new BorderPane();
                             TextArea txtTextArea = new TextArea();
@@ -382,8 +373,6 @@ public class DiskManagementWindow extends Application {
                                     for(int i=0;i<index;i++){
                                         outStringFinal[i] = outString[i];
                                     }
-                                    System.out.println("outStringFinal:" + outStringFinal[0] + "," + outStringFinal[index-1]);
-                                    System.out.println("ViewUtils.getFirstName(choicedNodeName)" + ViewUtils.getFirstName(choicedNodeName));
                                     //fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",(String[])outTxtFile.toArray());
                                     fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",outStringFinal);
                                     txtFileStage.close();
@@ -437,8 +426,6 @@ public class DiskManagementWindow extends Application {
                     copyFileExtendName = ViewUtils.getExtendName(choicedNodeName);
                     System.out.println("copyMenuItem.setOnAction  choicedNodeName:" + choicedNodeName + "   copyFileExtendName:" + copyFileExtendName);
                     fileService.copyFile(ViewUtils.getFirstName(choicedNodeName),copyFileExtendName);
-                    System.out.println("copyMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
-                            + ",extendName:" + ViewUtils.getExtendName(choicedNodeName));
                 }
             });
 
@@ -554,8 +541,6 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(ActionEvent event) {
                     ArrayList<String> outExeFile = new ArrayList<>();
-                    //System.out.println("得到了名字" + ViewUtils.getName());
-                    System.out.println("打开的是可执行文本文件");
                     Stage exeFileStage = new Stage();
                     FlowPane exeFileFlowPane = new FlowPane();
                     exeFileFlowPane.setPadding(new Insets(20));
@@ -645,7 +630,6 @@ public class DiskManagementWindow extends Application {
                             String param5 = param5Text.getText();
                             switch(instructionType.getValue()) {
                                 case "两个常量运算":
-                                    System.out.println("case \"两个常量运算\"");
                                     if((param1.equals("A")||param1.equals("B")||param1.equals("C")||param1.equals("D"))&&
                                             (param2.equals("A")||param2.equals("B")||param2.equals("C")||param2.equals("D"))) {
                                         int RA = param1.charAt(0) - 'A';
@@ -660,7 +644,6 @@ public class DiskManagementWindow extends Application {
                                     else ViewUtils.showAlter("该寄存器不存在！");
                                     break;
                                 case "内存中变量和一个常量运算":
-                                    System.out.println("case \"内存中变量和一个常量运算\"");
                                     int R0 = Integer.valueOf(param1);
                                     if(R0>=0&&R0<=7 &&
                                             (param2.equals("A")||param2.equals("B")||param2.equals("C")||param2.equals("D"))&&
@@ -677,7 +660,6 @@ public class DiskManagementWindow extends Application {
                                     else ViewUtils.showAlter("该地址或寄存器不存在！");
                                     break;
                                 case "内存中两个变量的运算":
-                                    System.out.println("case \"内存中两个变量的运算\"");
                                     int R1 = Integer.valueOf(param1);
                                     int R2 = Integer.valueOf(param3);
                                     if(R1>=0&&R1<=7 && R2>=0&&R2<=7 &&
@@ -695,7 +677,6 @@ public class DiskManagementWindow extends Application {
                                     else ViewUtils.showAlter("该地址或寄存器不存在！");
                                     break;
                                 case "赋值命令":
-                                    System.out.println("case \"赋值命令\"");
                                     if(param1.equals("A")||param1.equals("B")||param1.equals("C")||param1.equals("D")){
                                         int RA = param1.charAt(0) - 'A';
                                         String outExe4 = instrService.createAsnInstr(RA,Integer.valueOf(param2));
@@ -705,7 +686,6 @@ public class DiskManagementWindow extends Application {
                                     else ViewUtils.showAlter("该寄存器不存在！");
                                     break;
                                 case "设备控制命令":
-                                    System.out.println("case \"设备控制命令\"");
                                     String outExe5 = instrService.createEqpInstr(Integer.valueOf(param1),Integer.valueOf(param2));
                                     outExeFile.add(outExe5);
                                     outputTextArea.appendText("!" + param1 + " " + param2 + ";\n");
@@ -791,14 +771,11 @@ public class DiskManagementWindow extends Application {
         System.out.println("private void loadUI(String name,Pane pane){//打开文件夹，目录加载方法    " + name);
         String firstName = "";
         for(int i=0;i<fileNames.length;i+=8){
-            //System.out.println("binaryToDec test:"+(char)fileUtils.binaryToDec(fileNames[i]));
             firstName = Character.toString((char)fileUtils.binaryToDec(fileNames[i]))
                     + Character.toString((char)fileUtils.binaryToDec(fileNames[i+1]))
                     + Character.toString((char)fileUtils.binaryToDec(fileNames[i+2]));
             String extendName = Character.toString((char)fileUtils.binaryToDec(fileNames[i+3]));
-            System.out.println("loadUI 's firstName:" + firstName + ",,extendName:" + extendName);
             if (extendName.equals("D") ||extendName.equals("T") ||extendName.equals("E")){
-                System.out.println("VBox vBox = fileUI(firstName,fileNames[i+3]);" + firstName + extendName);
                 VBox vBox = fileUI(firstName + ViewUtils.getFullExtend(extendName), extendName);
                 pane.getChildren().add(vBox);
             }
@@ -838,13 +815,10 @@ public class DiskManagementWindow extends Application {
         vBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("event.getTarget"+event.getTarget().toString());
                 VBox aVBox = (VBox)event.getTarget();
                 Label aLabel = (Label)aVBox.getChildren().get(1);
                 String aString = aLabel.getText();
-                System.out.println(aString);
                 choicedNodeName = aString;
-                System.out.println("choicedNodeName:" + choicedNodeName);
             }
         });
         return vBox;

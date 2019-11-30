@@ -49,8 +49,10 @@ public class FileUtils extends InstrUtils {
      */
     public String[] getSubContext(String[] source, int startIndex, int lastIndex) {
         String[] tmp = new String[lastIndex - startIndex];
-        for (int i = 0; i < lastIndex - startIndex; i++) {
-            tmp[i] = decToBinary(source[i].charAt(0),8);
+        if (tmp.length > 0) {
+            for (int i = 0; i < lastIndex - startIndex; i++) {
+                tmp[i] = decToBinary(source[i].charAt(0), 8);
+            }
         }
         return tmp;
     }
@@ -61,7 +63,7 @@ public class FileUtils extends InstrUtils {
      * @param fileBlock 当前磁盘块
      * @return 下一磁盘块下标
      */
-    public int getNextBlockIndex(DiskBlock[] fatTable, DiskBlock fileBlock) {
+    private int getNextBlockIndex(DiskBlock[] fatTable, DiskBlock fileBlock) {
         int row = fileBlock.getIndex() / 128;
         int column = fileBlock.getIndex() % 128;
         return this.binaryToDec(fatTable[row].getBytes()[column].getDiskByte());
@@ -82,7 +84,6 @@ public class FileUtils extends InstrUtils {
         boolean breakFlag = false;
         for (Catalog catalog : readingCatalog) {
             for (CatalogEntry entry : catalog.getEntries()) {
-                System.out.println(formatName(entry.getName(),entry.getExpandedName())+" "+(formatName(fileName,expandedName)));
                 if (formatName(entry.getName(),entry.getExpandedName()).equals(formatName(fileName,expandedName))) {
                     targetEntry = entry;
                     breakFlag = true;

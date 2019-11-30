@@ -3,6 +3,7 @@ package disk.service;
 import disk.bean.DiskBlock;
 import disk.bean.DiskByte;
 import disk.util.DiskUtils;
+import file.service.FileService;
 
 import java.util.ArrayList;
 
@@ -53,27 +54,19 @@ public class DiskService {
         diskUtils.write(blocks);
     }
 
-    /**
-     * 获得磁盘占用情况
-     * @return 磁盘占用情况表，每一个元素都表示该块被占用了多少字节
-     */
-    public ArrayList<Integer> getDiskStatus() {
-        ArrayList<Integer> statusList = new ArrayList<>();
-        for (DiskBlock b : blocks) {
-            statusList.add(b.getBlockStatus());
-        }
-        return statusList;
-    }
-
     public boolean formatDisk() {
-        for (int i = 0; i < 2; i++) {
-            for (DiskByte tmpByte : fatBlocks[i].getBytes()) {
+        for (DiskBlock block : blocks) {
+            for (DiskByte tmpByte :
+                    block.getBytes()) {
                 tmpByte.setDiskByte("00000000");
             }
         }
         fatBlocks[0].getBytes()[0].setDiskByte("00000001");
         fatBlocks[0].getBytes()[1].setDiskByte("00000001");
         fatBlocks[0].getBytes()[2].setDiskByte("00000001");
+        FileService fileService = FileService.getInstance();
+        fileService.createFile("C:", "D", "W", 96);
+        //fixed
         return true;
     }
     /**

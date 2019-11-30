@@ -16,7 +16,6 @@ public class ViewUtils {
         Optional<String> name = dialog.showAndWait();
         if (name.isPresent()){
             if(!name.equals("")){
-                System.out.println("ViewUtils.getName() 's name.get():" + name.get());
                 return name.get();
             }
         }
@@ -37,7 +36,6 @@ public class ViewUtils {
         String[] nameArray = fullName.split("\\.");
         String lastName = nameArray[nameArray.length - 1];
         Character extendName = lastName.toUpperCase().charAt(0);
-        //System.out.println(lastName.toUpperCase().charAt(0));
         return extendName.toString();
     }
 

@@ -17,22 +17,28 @@ public class DiskBlock {
         this.bytes = bytes;
     }
 
-    public int getBlockStatus(){
-        int cnt = 0;
-        for (int i = SIZE_PER_BLOCK - 1; i >= 0; i--) {
-            if (!bytes[i].getDiskByte().equals(emp)) {
-                cnt = i+1;
-                break;
-            }
-        }
-        return cnt;
-    }
-
     public int getIndex() {
         return index;
     }
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public boolean isEmpty() {
+        boolean statement = true;
+        for (DiskByte diskByte : bytes) {
+            if (!diskByte.isEmpty()) {
+                statement = false;
+                break;
+            }
+        }
+        return statement;
+    }
+
+    public void setEmpty() {
+        for (DiskByte diskByte : bytes) {
+            diskByte.setDiskByte("00000000");
+        }
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class DiskUtils {
     private File file;
-    private final int SIZE_PER_BLOCK = 128;
+
     public DiskUtils(String actualPath) {
         this.file = new File(actualPath);
     }
@@ -49,6 +49,7 @@ public class DiskUtils {
         String[] lines = str.split("\n");
         for (String s : lines) {
             String[] tmp = s.split(" ");
+            int SIZE_PER_BLOCK = 128;
             DiskByte[] bytes = new DiskByte[SIZE_PER_BLOCK];
             for (int i = 0; i < SIZE_PER_BLOCK; i++) {
                 bytes[i] = new DiskByte();

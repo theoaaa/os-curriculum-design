@@ -25,7 +25,6 @@ public class FileService {
     private FileUtils fileUtils = FileUtils.getInstance();
     private CopyOperation copyOperation = new CopyOperation();
     private RootCatalog rootCatalog;
-    private CatalogEntry lastEntry;
     private FileService(){
         diskService = DiskService.getInstance();
         rootCatalog = new RootCatalog(diskService.getDiskBlock(2));
@@ -41,12 +40,12 @@ public class FileService {
      * 每一次关闭文件的界面都要调用这个方法
      */
     public void closeMethod() {
+        tables.backward();
         diskService.modifyDisk();
     }
 
     /**
      * 获得磁盘块使用情况
-     *
      * @return 多少个磁盘块被使用
      */
     public int getDiskUsedStatus() {
@@ -63,7 +62,6 @@ public class FileService {
 
     /**
      * 后退方法
-     * @param fileName 目录名
      * @return 目录
      */
     public void  backward(){
@@ -78,7 +76,6 @@ public class FileService {
     public void changeFileAttribute(String fileName,String expandedName){
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
         if(expandedName.equals("D")){
-            return;
         }else{
             switch (targetEntry.getExpandedName()){
                 case "E": targetEntry.setExpandedName("T");
@@ -96,11 +93,11 @@ public class FileService {
     public void copyFile(String fileName, String expandedName) {
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
         copyOperation.setEntry(targetEntry);
+        copyOperation.setFileContext(openFile(fileName, expandedName));
     }
 
     /**
      * 判断黏贴板中是否有合适的目录项，如果有就可以赋值
-     *
      * @return 是否能够黏贴
      */
     public boolean copyable() {
@@ -113,7 +110,6 @@ public class FileService {
 
     /**
      * 格式化磁盘的方法
-     *
      * @return 格式化的情况
      */
     public boolean formatDisk() {
@@ -128,8 +124,7 @@ public class FileService {
         CatalogEntry entry = copyOperation.getEntry();
         boolean statement = createFile(entry.getName(),entry.getExpandedName(),entry.getAttribute(),entry.getSize());
         if(statement) {
-            String[] context = copyOperation.getFileContext(FATBlocks);
-            saveFile(entry.getName(), entry.getExpandedName(), context);
+            saveFile(entry.getName(), entry.getExpandedName(), copyOperation.getFileContext());
             copyOperation.setEntry(null);
         }
         return statement;
@@ -179,12 +174,7 @@ public class FileService {
         ArrayList<Catalog> targetCatalog = fileUtils.getFullCatalog(tables,FATBlocks);
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
         if(!targetEntry.isEmpty()){
-            if ("D".equals(expandedName)) {
-                statement = deleteOperation.deleteDirectory(targetEntry, targetCatalog, FATBlocks);
-            } else {
-                statement = deleteOperation.deleteFile(targetEntry, targetCatalog, FATBlocks);
-            }
-            lastEntry.setSize(lastEntry.getSize()-8);
+            statement = deleteOperation.delete(targetEntry, targetCatalog, FATBlocks);
         }
         return statement;
     }
@@ -197,9 +187,8 @@ public class FileService {
      */
     public String[] openFile(String fileName,String expandedName){
         CatalogEntry targetEntry =  fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
-        lastEntry = targetEntry;
         Catalog targetCatalog = new Catalog(diskService.getDiskBlock(targetEntry.getStartedBlockIndex()));
-        if(expandedName.equals("D")) {
+        if (expandedName.equals("D") && !targetEntry.isEmpty()) {
             tables.setTop(targetCatalog);
         }
         OpenOperation openOperation = new OpenOperation();
@@ -221,11 +210,14 @@ public class FileService {
         CreateOperation createOperation = new CreateOperation();
         boolean statement = false;
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
-        int getEmptyBlockIndex =  fileUtils.getEmptyBlockIndex(FATBlocks);
-        if(targetEntry.isEmpty()&&getEmptyBlockIndex!=-1){
-            targetEntry.setContext(createOperation.getEntryContext(fileName, expandedName, attribute, getEmptyBlockIndex, size));
+        int emptyBlockIndex = fileUtils.getEmptyBlockIndex(FATBlocks);
+        if (targetEntry.isEmpty() && emptyBlockIndex != -1) {
+            targetEntry.setContext(createOperation.getEntryContext(fileName, expandedName, attribute, emptyBlockIndex, size));
             fileUtils.modifyFAT(targetEntry.getStartedBlockIndex(),1,FATBlocks);
             statement = true;
+        }
+        if (!diskService.getDiskBlock(emptyBlockIndex).isEmpty()) {
+            diskService.getDiskBlock(emptyBlockIndex).setEmpty();
         }
         return statement;
     }
@@ -238,6 +230,11 @@ public class FileService {
     public void saveFile(String fileName, String expandedName,String[] fileContext) {
         CreateOperation createOperation = new CreateOperation();
         CatalogEntry targetEntry = fileUtils.getTargetEntryByTables(fileName,expandedName,tables,FATBlocks);
+        if (expandedName.equals("E")) {
+            for (int i = 0; i < fileContext.length; i++) {
+                fileContext[i] = String.valueOf(fileUtils.binaryToDec(fileContext[i]));
+            }
+        }
         if (!targetEntry.isEmpty()) {
             targetEntry.setSize(fileContext.length);
             DiskBlock targetDiskBlock = diskService.getDiskBlock(targetEntry.getStartedBlockIndex());
