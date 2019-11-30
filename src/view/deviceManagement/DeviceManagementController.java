@@ -34,7 +34,7 @@ public class DeviceManagementController {
         bWaitingList = DeviceAllocation.getBWaitingList();
         cWaitingList = DeviceAllocation.getCWaitingList();
         deviceList = DeviceAllocation.getDeviceUsage();
-         updateMessage();
+        updateMessage();
     }
 
     // 初始化/更新数据
