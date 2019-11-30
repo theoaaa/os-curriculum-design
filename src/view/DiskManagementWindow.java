@@ -307,10 +307,8 @@ public class DiskManagementWindow extends Application {
                     String name = choicedNodeName;
                     System.out.println("choicedNodeName" + choicedNodeName + "ViewUtils.getFirstName(name),ViewUtils.getExtendName(name)---"
                             + ViewUtils.getFirstName(name).trim() + "," + ViewUtils.getExtendName(name));
-                    //if(fileNode != null){
                     if(true){
                         System.out.println("存在");
-                        //if (fileNode.getType()!=0) {
                         if(ViewUtils.getExtendName(name).equals("D")){
                             //打开的是文件夹
                             Stage fileDirStage = new Stage();
@@ -328,8 +326,6 @@ public class DiskManagementWindow extends Application {
                             //创建关闭按钮
                             VBox backBox = fileUI("关闭" ,"关闭");
                             fileDirPane.getChildren().add(backBox);
-
-                            //upsetUI(name,pane1);//文件夹显示
                             loadUI(name,fileDirPane);
                             Scene fileDirScene = new Scene(fileDirPane, 500, 400);
                             fileDirStage.setScene(fileDirScene);
@@ -449,14 +445,42 @@ public class DiskManagementWindow extends Application {
             changeAttrMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    String newExtendName = ViewUtils.getName("请输入新的属性（T/E/D）");
-                    if (newExtendName == "T" || newExtendName == "E" || newExtendName == "D"){
-                        fileService.changeFileAttribute(ViewUtils.getFirstName(choicedNodeName),newExtendName);
+                    String oldExtendName = ViewUtils.getExtendName(choicedNodeName);
+                    if (oldExtendName == "T" ){
+                        fileService.changeFileAttribute(ViewUtils.getFirstName(choicedNodeName),oldExtendName);
                         System.out.println("changeAttrMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
-                                + ",newExtendName:" + newExtendName);
+                                + ",oldExtendName:" + oldExtendName);
+                        for(Node aNode: choicedNodePane.getChildren()){
+                            VBox avBox =(VBox)aNode;
+                            Label aLabel = (Label)avBox.getChildren().get(1);
+                            String aString = aLabel.getText();
+                            if (aString.equals(choicedNodeName)) {
+                                choicedNodePane.getChildren().remove(aNode);
+                                VBox newVBox = fileUI(ViewUtils.getFirstName(choicedNodeName)+".exe","E");
+                                newVBox.addEventHandler(ContextMenuEvent.ANY, nodeRightClickedEvent);
+                                choicedNodePane.getChildren().add(newVBox);
+                                break;
+                            }
+                        }
                     }
-                    else {
-                        ViewUtils.showAlter("属性错误！");
+                    else if (oldExtendName == "E" ){
+                        fileService.changeFileAttribute(ViewUtils.getFirstName(choicedNodeName),oldExtendName);
+                        System.out.println("changeAttrMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
+                                + ",oldExtendName:" + oldExtendName);
+                        for(Node aNode: choicedNodePane.getChildren()){
+                            VBox avBox =(VBox)aNode;
+                            Label aLabel = (Label)avBox.getChildren().get(1);
+                            String aString = aLabel.getText();
+                            if (aString.equals(choicedNodeName)) {
+                                choicedNodePane.getChildren().remove(aNode);
+                                VBox newVBox = fileUI(ViewUtils.getFirstName(choicedNodeName)+".txt","T");
+                                newVBox.addEventHandler(ContextMenuEvent.ANY, nodeRightClickedEvent);
+                                choicedNodePane.getChildren().add(newVBox);
+                                break;
+                            }
+                        }
+                    }else {
+                        ViewUtils.showAlter("该文件属性不可改！");
                     }
                 }
             });
@@ -464,21 +488,25 @@ public class DiskManagementWindow extends Application {
             pasteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    if(!fileService.pasteFile()){
-                        ViewUtils.showAlter("粘贴失败！");
-                    } else{
-                        //新建一个对应属性的图标
-                        if (copyFileExtendName == "T" || copyFileExtendName == "E" || copyFileExtendName == "D"){
-                            String pasteFirstName = ViewUtils.getName("请输入新的文件名");
-                            if (pasteFirstName == null){
-                                ViewUtils.showAlter("名字错误！");
+                    if(fileService.copyable()){
+                        if(!fileService.pasteFile()){
+                            ViewUtils.showAlter("粘贴失败！");
+                        } else{
+                            //新建一个对应属性的图标
+                            if (copyFileExtendName == "T" || copyFileExtendName == "E" || copyFileExtendName == "D"){
+                                String pasteFirstName = ViewUtils.getName("请输入新的文件名");
+                                if (pasteFirstName == null){
+                                    ViewUtils.showAlter("名字错误！");
+                                }else {
+                                    VBox aVBox = fileUI(pasteFirstName+ViewUtils.getFullExtend(copyFileExtendName),copyFileExtendName);
+                                    choicedNodePane.getChildren().add(aVBox);
+                                }
                             }else {
-                                VBox aVBox = fileUI(pasteFirstName+ViewUtils.getFullExtend(copyFileExtendName),copyFileExtendName);
-                                choicedNodePane.getChildren().add(aVBox);
+                                ViewUtils.showAlter("复制错误！");
                             }
-                        }else {
-                            ViewUtils.showAlter("无复制文件！");
                         }
+                    }else {
+                        ViewUtils.showAlter("无复制文件！");
                     }
                 }
             });
@@ -488,13 +516,16 @@ public class DiskManagementWindow extends Application {
                 public void handle(ActionEvent event) {
                     String name = ViewUtils.getName();
                     if (name == null){
-                        ViewUtils.showAlter("新建失败！");
+
                     }else {
                         System.out.println("ViewUtils.getName() " +
                                 "in newTxtFileMenuItem:" + name);
-                        VBox aVBox = fileUI(name+".txt","T");
-                        choicedNodePane.getChildren().add(aVBox);
-                        fileService.createFile(name,"T","W",0);
+                        if(fileService.createFile(name,"T","W",0)) {
+                            VBox aVBox = fileUI(name+".txt","T");
+                            choicedNodePane.getChildren().add(aVBox);
+                        }else {
+                            ViewUtils.showAlter("创建失败！");
+                        }
                     }
                 }
             });
@@ -504,12 +535,16 @@ public class DiskManagementWindow extends Application {
                 public void handle(ActionEvent event) {
                     String name = ViewUtils.getName();
                     if (name == null){
-                        ViewUtils.showAlter("新建失败！");
+                        ViewUtils.showAlter("请输入正确的名字！");
                     }else {
-                        VBox aVBox = fileUI(name+".dir","D");
-                        fileService.createFile(name,"D","W",0);
-                        aVBox.addEventHandler(ContextMenuEvent.ANY, nodeRightClickedEvent);
-                        choicedNodePane.getChildren().add(aVBox);
+                        if(fileService.createFile(name,"D","W",96)){
+                            VBox aVBox = fileUI(name+".dir","D");
+                            aVBox.addEventHandler(ContextMenuEvent.ANY, nodeRightClickedEvent);
+                            choicedNodePane.getChildren().add(aVBox);
+                        }else {
+                            ViewUtils.showAlter("新建失败！");
+                        }
+
                     }
                 }
             });
@@ -694,17 +729,20 @@ public class DiskManagementWindow extends Application {
                         public void handle(MouseEvent event) {
                             String name = ViewUtils.getName();
                             if (name == null){
-                                ViewUtils.showAlter("新建失败！");
+                                ViewUtils.showAlter("请输入正确的名字！");
                             }else {
-                                fileService.createFile(name,"E","W",0);
-                                String[] outFiles = new String[outExeFile.size()];
-                                for(int i=0;i<outExeFile.size();i++){
-                                    outFiles[i] = outExeFile.get(i);
+                                if (fileService.createFile(name,"E","W",0)){
+                                    String[] outFiles = new String[outExeFile.size()];
+                                    for(int i=0;i<outExeFile.size();i++){
+                                        outFiles[i] = outExeFile.get(i);
+                                    }
+                                    fileService.saveFile(name,"E", outFiles);
+                                    VBox aVBox=fileUI(name+".exe","E");
+                                    choicedNodePane.getChildren().add(aVBox);
+                                }else {
+                                    ViewUtils.showAlter("新建失败！");
                                 }
-                                fileService.saveFile(name,"E", outFiles);
                                 exeFileStage.close();
-                                VBox aVBox=fileUI(name+".exe","E");
-                                choicedNodePane.getChildren().add(aVBox);
                             }
                         }
                     });
