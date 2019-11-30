@@ -66,6 +66,7 @@ public class DiskService {
         fatBlocks[0].getBytes()[2].setDiskByte("00000001");
         FileService fileService = FileService.getInstance();
         fileService.createFile("C:", "D", "W", 96);
+        //fixed
         return true;
     }
     /**
