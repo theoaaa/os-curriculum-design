@@ -341,54 +341,57 @@ public class DiskManagementWindow extends Application {
                                     }
                                 }
                             });
-                        }
-                        else if(ViewUtils.getExtendName(name).equals("T")){
+                        } else if (ViewUtils.getExtendName(name).equals("T") || ViewUtils.getExtendName(name).equals("E")) {
                             //打开的是文本文件
-                            Stage txtFileStage = new Stage();
                             //获取文本文件
                             String[] inFile = fileService.openFile(ViewUtils.getFirstName(name),ViewUtils.getExtendName(name));
-
-                            String txtString = "";
-                            for(int i=0;i<inFile.length;i++) {
-                                txtString += Character.toString((char) fileUtils.binaryToDec(inFile[i]));
-                            }
-                            BorderPane txtFileBorderPane = new BorderPane();
-                            TextArea txtTextArea = new TextArea();
-                            txtTextArea.setText(txtString);
-                            Pane txtFilePane = new Pane();
-
-                            Button saveButton = new Button("保存");
-                            saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent event) {
-                                    //public void saveTextFile(String textInArea,String actualPath){} //保存文本文件
-                                    String textInArea = txtTextArea.getText();
-                                    //ArrayList<String> outTxtFile = new ArrayList<>();
-                                    String[] outString = new String[10000];
-                                    int index = 0;
-                                    char[] textChar = textInArea.toCharArray();
-                                    for(char c:textChar){
-                                        //outTxtFile.add(Character.toString(c));
-                                        outString[index++] = Character.toString(c);
-                                    }
-                                    String[] outStringFinal = new String[index];
-                                    for(int i=0;i<index;i++){
-                                        outStringFinal[i] = outString[i];
-                                    }
-                                    //fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",(String[])outTxtFile.toArray());
-                                    fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",outStringFinal);
-                                    txtFileStage.close();
+                            if (ViewUtils.getExtendName(name).equals("T")) {
+                                Stage txtFileStage = new Stage();
+                                String txtString = "";
+                                for (int i = 0; i < inFile.length; i++) {
+                                    txtString += Character.toString((char) fileUtils.binaryToDec(inFile[i]));
                                 }
-                            });
+                                BorderPane txtFileBorderPane = new BorderPane();
+                                TextArea txtTextArea = new TextArea();
+                                txtTextArea.setText(txtString);
+                                Pane txtFilePane = new Pane();
 
-                            txtFilePane.getChildren().add(saveButton);
+                                Button saveButton = new Button("保存");
+                                saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent event) {
+                                        //public void saveTextFile(String textInArea,String actualPath){} //保存文本文件
+                                        String textInArea = txtTextArea.getText();
+                                        //ArrayList<String> outTxtFile = new ArrayList<>();
+                                        String[] outString = new String[10000];
+                                        int index = 0;
+                                        char[] textChar = textInArea.toCharArray();
+                                        for (char c : textChar) {
+                                            //outTxtFile.add(Character.toString(c));
+                                            outString[index++] = Character.toString(c);
+                                        }
+                                        String[] outStringFinal = new String[index];
+                                        for (int i = 0; i < index; i++) {
+                                            outStringFinal[i] = outString[i];
+                                        }
+                                        //fileService.saveFile(ViewUtils.getFirstName(choicedNodeName),"T",(String[])outTxtFile.toArray());
+                                        fileService.saveFile(ViewUtils.getFirstName(choicedNodeName), "T", outStringFinal);
+                                        txtFileStage.close();
+                                    }
+                                });
+
+                                txtFilePane.getChildren().add(saveButton);
 
 
-                            txtFileBorderPane.setCenter(txtTextArea);
-                            txtFileBorderPane.setBottom(txtFilePane);
-                            Scene txtFileScene = new Scene(txtFileBorderPane);
-                            txtFileStage.setScene(txtFileScene);
-                            txtFileStage.show();
+                                txtFileBorderPane.setCenter(txtTextArea);
+                                txtFileBorderPane.setBottom(txtFilePane);
+                                Scene txtFileScene = new Scene(txtFileBorderPane);
+                                txtFileStage.setScene(txtFileScene);
+                                txtFileStage.show();
+                            } else {
+                                //TODO:取消注释
+                                //ProcessControl.create(inFile);
+                            }
                         }
                     }
                 }
