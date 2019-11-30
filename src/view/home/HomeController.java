@@ -53,9 +53,28 @@ public class HomeController {
     }
 
     @FXML
+    private void openUserInterface() {
+
+    }
+
+    @FXML
+    private void openFileManagement() {
+
+    }
+
+    @FXML
+    private void openDeviceManagement() {
+
+    }
+
+    @FXML
+    private void openStorageManagement() {
+
+    }
+
+    @FXML
     private void openProcessManagement() {
         ProcessManagementWindow window = ProcessManagementWindow.getInstance();
-
         window.show();
     }
 
