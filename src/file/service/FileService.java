@@ -101,9 +101,9 @@ public class FileService {
      * @return 是否能够黏贴
      */
     public boolean copyable() {
-        boolean statement = true;
+        boolean statement = false;
         if (copyOperation.getEntry() != null) {
-            statement = false;
+            statement = true;
         }
         return statement;
     }
