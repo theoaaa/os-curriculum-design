@@ -51,6 +51,7 @@ public class CatalogEntry {
     public DiskByte[] getContext(){
         return context;
     }
+
     public void setContext(String[] context) {
         int i=0;
         for(DiskByte tmp:this.context){
@@ -77,22 +78,7 @@ public class CatalogEntry {
             diskByte.setDiskByte("00000000");
         }
     }
-    public boolean setUsedSize(int size){
-        if(getUsedSize()+size>getTotalSize()){
-            return false;
-        }else{
-            int usedSize = getUsedSize()+size;
-            context[6].setDiskByte(fileUtils.decToBinary(usedSize,8));
-            return true;
-        }
-    }
 
-    public int getUsedSize(){
-        return fileUtils.binaryToDec(context[6].getDiskByte());
-    }
-    public int getTotalSize(){
-        return fileUtils.binaryToDec(context[7].getDiskByte());
-    }
     public void setExpandedName(String t) {
         context[3].setDiskByte(fileUtils.decToBinary(t.charAt(0),1));
     }
@@ -101,7 +87,7 @@ public class CatalogEntry {
         String name = fileUtils.formatName(newName,oldExpandedName);
         int i=0;
         while (i<3){
-            context[i].setDiskByte(fileUtils.decToBinary(name.charAt(i),1));
+            context[i].setDiskByte(fileUtils.decToBinary(name.charAt(i), 8));
             i++;
         }
     }

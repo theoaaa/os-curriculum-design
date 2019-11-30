@@ -20,13 +20,8 @@ public class CatalogContainer extends ArrayList<Catalog> {
         return tables;
     }
     public void backward(){
-       presentIndex = 0;
-    }
-    public void forward(){
-        if(presentIndex==this.size()){
-            return;
-        }else {
-            presentIndex++;
+        if (presentIndex != 0) {
+            presentIndex--;
         }
     }
 
@@ -50,5 +45,9 @@ public class CatalogContainer extends ArrayList<Catalog> {
 
     public int getPresentIndex() {
         return presentIndex;
+    }
+
+    public void setRoot() {
+        presentIndex = 1;
     }
 }

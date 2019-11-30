@@ -13,56 +13,55 @@ import java.util.ArrayList;
  * @date 2019/11/11 12:36
  */
 public class DeleteOperation extends AbstractOperation{
+    public boolean delete(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog, DiskBlock[] FATBlocks) {
+        if ("D".equals(targetEntry.getExpandedName())) {
+            deleteDirectory(targetEntry, targetCatalog, FATBlocks);
+        } else {
+            deleteFile(targetEntry, FATBlocks);
+        }
+        return modifyCatalog(targetEntry, targetCatalog);
+    }
     /**
      * 删除文件
      *
      * @param targetEntry   目标文件的目录项
-     * @param targetCatalog 目标文件所在的目录
      * @param FATBlocks     fat表
      * @return 文件是否被删除
      */
-    public boolean deleteFile(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog, DiskBlock[] FATBlocks){
+    private void deleteFile(CatalogEntry targetEntry, DiskBlock[] FATBlocks) {
         int startIndex = targetEntry.getStartedBlockIndex();
-        boolean statement = modifyCatalog(targetEntry,targetCatalog);
         if(!targetEntry.isEmpty()){
             DiskService diskService = DiskService.getInstance();
-            if(statement) {
-                fileUtils.modifyNextBlock(FATBlocks, diskService.getDiskBlock(startIndex));
-            }
+            fileUtils.modifyNextBlock(FATBlocks, diskService.getDiskBlock(startIndex));
+            fileUtils.modifyFAT(startIndex, 0, FATBlocks);
         }
-        return statement;
     }
 
     /**
      * 删除文件夹
-     *
      * @param targetEntry   目标文件的目录项
      * @param targetCatalog 目标文件所在的目录
      * @param FATBlocks     fat表
      * @return 文件夹是否被删除
      */
-    public boolean deleteDirectory(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog, DiskBlock[] FATBlocks){
+    private void deleteDirectory(CatalogEntry targetEntry, ArrayList<Catalog> targetCatalog, DiskBlock[] FATBlocks) {
         DiskService diskService = DiskService.getInstance();
-        Catalog dir = new Catalog(diskService.getDiskBlock(targetEntry.getStartedBlockIndex()));//文件夹目录，即文件夹自己的内容
-        ArrayList<Catalog> dirCatalog = fileUtils.getFullCatalog(dir,FATBlocks);//获取完整的目录，也就是文件夹
-        for(Catalog catalog:dirCatalog){
-            for(CatalogEntry entry:catalog.getEntries()){
+        Catalog dir = new Catalog(diskService.getDiskBlock(targetEntry.getStartedBlockIndex()));
+        ArrayList<Catalog> dirCatalog = fileUtils.getFullCatalog(dir, FATBlocks);
+        for (Catalog tmpCatalog : dirCatalog) {
+            for (CatalogEntry entry : tmpCatalog.getEntries()) {
                 if(entry.getExpandedName().equals("D")){
-                    Catalog tmp = new Catalog(diskService.getDiskBlock(entry.getStartedBlockIndex()));
-                    ArrayList<Catalog> tmpCatalog = fileUtils.getFullCatalog(tmp,FATBlocks);
-                    deleteDirectory(entry,tmpCatalog,FATBlocks);
-                }else{
-                    fileUtils.modifyNextBlock(FATBlocks,diskService.getDiskBlock(entry.getStartedBlockIndex()));//改变FAT
+                    deleteDirectory(entry, dirCatalog, FATBlocks);
+                } else {
+                    deleteFile(entry, FATBlocks);
                 }
             }
         }
-        fileUtils.modifyNextBlock(FATBlocks,diskService.getDiskBlock(targetEntry.getStartedBlockIndex()));
-        return modifyCatalog(targetEntry,targetCatalog);
+        deleteFile(targetEntry, FATBlocks);
     }
 
     /**
      * 修改文件目录
-     *
      * @param targetEntry   目标目录项
      * @param targetCatalog 目标目录
      * @return 修改结果

@@ -1,11 +1,6 @@
 package file.operation;
 
-import disk.bean.DiskBlock;
-import disk.bean.DiskByte;
-import disk.service.DiskService;
 import file.bean.CatalogEntry;
-
-import java.util.ArrayList;
 
 /**
  * @author Rorke
@@ -13,7 +8,7 @@ import java.util.ArrayList;
  */
 public class CopyOperation extends AbstractOperation {
     private CatalogEntry entry =null;
-
+    private String[] fileContext;
     public CatalogEntry getEntry() {
         return entry;
     }
@@ -22,27 +17,14 @@ public class CopyOperation extends AbstractOperation {
         this.entry = entry;
     }
 
-    /**
-     * 获得文件内容
-     *
-     * @param FATBlocks fat表
-     * @return 文件的所有内容
-     */
-    public String[] getFileContext(DiskBlock[] FATBlocks) {
-        DiskService diskService = DiskService.getInstance();
-        ArrayList<DiskBlock> context = new ArrayList<>();
-        context.add(diskService.getDiskBlock(entry.getStartedBlockIndex()));
-        int nextIndex = entry.getStartedBlockIndex();
-        while ((nextIndex = fileUtils.getNextBlockIndex(FATBlocks,diskService.getDiskBlock(nextIndex)))!=1){
-            context.add(diskService.getDiskBlock(nextIndex));
+    public void setFileContext(String[] str) {
+        fileContext = new String[str.length];
+        for (int i = 0; i < str.length; i++) {
+            fileContext[i] = String.valueOf((char) fileUtils.binaryToDec(str[i]));
         }
-        int i=0;
-        String[] fileContext = new String[entry.getSize()];
-        for (DiskBlock block:context) {
-            for(DiskByte tmp:block.getBytes()){
-                fileContext[i] = tmp.getDiskByte();
-            }
-        }
+    }
+
+    public String[] getFileContext() {
         return fileContext;
     }
 }
