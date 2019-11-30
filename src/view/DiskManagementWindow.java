@@ -229,6 +229,7 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(MouseEvent event) {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
+                        ViewUtils.showAlter("磁盘已格式化！");
                         fileService.formatDisk();
                     }
                 }
@@ -325,6 +326,7 @@ public class DiskManagementWindow extends Application {
                             Scene fileDirScene = new Scene(fileDirPane, 500, 400);
                             fileDirStage.setScene(fileDirScene);
                             fileDirStage.setMaximized(true);
+                            fileDirStage.setTitle(name);
                             fileDirStage.show();
                             //fileDirStage.setAlwaysOnTop(true);
 
@@ -433,7 +435,7 @@ public class DiskManagementWindow extends Application {
                 @Override
                 public void handle(ActionEvent event) {
                     String oldExtendName = ViewUtils.getExtendName(choicedNodeName);
-                    if (oldExtendName == "T" ){
+                    if (oldExtendName.equals("T")){
                         fileService.changeFileAttribute(ViewUtils.getFirstName(choicedNodeName),oldExtendName);
                         System.out.println("changeAttrMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
                                 + ",oldExtendName:" + oldExtendName);
@@ -450,7 +452,7 @@ public class DiskManagementWindow extends Application {
                             }
                         }
                     }
-                    else if (oldExtendName == "E" ){
+                    else if (oldExtendName.equals("E")){
                         fileService.changeFileAttribute(ViewUtils.getFirstName(choicedNodeName),oldExtendName);
                         System.out.println("changeAttrMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
                                 + ",oldExtendName:" + oldExtendName);
@@ -467,6 +469,7 @@ public class DiskManagementWindow extends Application {
                             }
                         }
                     }else {
+                        System.out.println("该文件属性不可改！ choicedNodeName:" + choicedNodeName + "    oldExtendName:" + oldExtendName);
                         ViewUtils.showAlter("该文件属性不可改！");
                     }
                 }
@@ -480,7 +483,7 @@ public class DiskManagementWindow extends Application {
                             ViewUtils.showAlter("粘贴失败！");
                         } else{
                             //新建一个对应属性的图标
-                            if (copyFileExtendName == "T" || copyFileExtendName == "E" || copyFileExtendName == "D"){
+                            if (copyFileExtendName.equals("T") || copyFileExtendName.equals("E") || copyFileExtendName.equals("D")){
                                 String pasteFirstName = ViewUtils.getName("请输入新的文件名");
                                 if (pasteFirstName == null){
                                     ViewUtils.showAlter("名字错误！");
