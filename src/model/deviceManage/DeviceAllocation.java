@@ -6,6 +6,8 @@ import model.device.DeviceA;
 import model.device.DeviceB;
 import model.device.DeviceC;
 import model.processManege.ProcessControl;
+import view.deviceManagement.DeviceManagementController;
+import view.deviceManagement.DeviceManagementWindow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,8 @@ public class DeviceAllocation {
     // 线程池
     public static ExecutorService deviceThreadPool = Executors.newCachedThreadPool();
 
+    public static DeviceManagementController controller;
+
 
     // 初始化各类设备
     static {
@@ -62,6 +66,7 @@ public class DeviceAllocation {
     public static boolean allocate(PCB proc, String deviceType, int useTime){
         //System.out.println("调用" + deviceType);
 //        deviceType.toUpperCase();
+        controller = DeviceManagementWindow.getController();
         switch (deviceType){
             case "A" :
                 if (freeNumOfDeviceA < 1) {
@@ -121,6 +126,8 @@ public class DeviceAllocation {
         device.setAllocated(true);
         map.put(pcb, device);
         procList.add(pcb);
+        // 更新界面显示
+        controller.updateMessage();
     }
 
     // 线程中断，模拟设备使用期间IO
@@ -147,6 +154,8 @@ public class DeviceAllocation {
     // CPU调用方法回收
     // 传入进程控制块
     public static void deviceRecycle(PCB pcb){
+        controller = DeviceManagementWindow.getController();
+
         // 恢复设备参数
         Device device = map.get(pcb);
         device.setPcb(null);
@@ -183,6 +192,8 @@ public class DeviceAllocation {
                 }
                 break;
         }
+        // 更新界面显示
+        controller.updateMessage();
     }
 
     // 返回设备使用列表
