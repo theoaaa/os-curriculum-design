@@ -28,4 +28,21 @@ public class StringUtil {
         }
         return num;
     }
+
+    public static boolean checkInstruction(String ins){
+        boolean res = true;
+        if(ins.length() != 8) {
+            res = false;
+        }else if(ins.startsWith("111")) {
+            res = false;
+        }else {
+            for(int i=0; i<8; ++i){
+                if(ins.charAt(i) != '0' && ins.charAt(i) != '1'){
+                    res = false;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
 }
