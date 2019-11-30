@@ -28,10 +28,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 
-public class DiskMainUI extends Application {
+public class DiskManagementWindow extends Application {
     FileUtils fileUtils = FileUtils.getInstance();
     DiskService diskService = DiskService.getInstance();
     FileService fileService = FileService.getInstance();
@@ -44,9 +45,63 @@ public class DiskMainUI extends Application {
     MenuItem newTxtFileMenuItem = new MenuItem("新建文本文件");
     MenuItem newExeFileMenuItem = new MenuItem("新建可执行文件");
     MenuItem newFileDirMenuItem = new MenuItem("新建文件夹");
+    MenuItem pasteMenuItem = new MenuItem("粘贴");
     MenuItem openMenuItem = new MenuItem("打开");
     MenuItem deleteMenuItem = new MenuItem("删除");
     MenuItem renameMenuItem = new MenuItem("重命名");
+    MenuItem copyMenuItem = new MenuItem("复制");
+    MenuItem changeAttrMenuItem = new MenuItem("改变属性");
+    String copyFileExtendName = null;
+
+
+    private Stage primaryStage; // 窗口 Stage 对象
+    private Boolean isExisted = false; // 窗口是否已存在
+    private Boolean isMinimized = false; // 窗口是否最小化
+    private static DiskManagementWindow diskManagementWindow = new DiskManagementWindow();
+
+    /*private DiskManagementWindow(){
+
+    }*/
+
+    public static DiskManagementWindow getInstance(){
+        if(diskManagementWindow == null){
+            diskManagementWindow = new DiskManagementWindow();
+        }
+        return diskManagementWindow;
+    }
+
+    /**
+     * 绑定 isMinimized 值与当前窗口最小化状态
+     * @param scene
+     */
+    private void bindIsMinimized(Scene scene) {
+        // 监听窗口 最小化/最大化 事件；oldValue 和 newValue 均表示是否最大化
+        scene.getWindow().focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                isMinimized =  !newValue;
+            }
+        });
+    }
+
+    /**
+     * 显示窗口
+     */
+    public void show() {
+        if (isExisted) { // 窗口是否已存在
+            // 当窗口最小化时显示窗口
+            if (isMinimized) {
+                this.primaryStage.setIconified(false);
+            }
+        } else {
+            try {
+                start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     EventHandler<ContextMenuEvent> blankRightClickedEvent;  //鼠标点击空白处事件
     EventHandler<ContextMenuEvent> nodeRightClickedEvent = new EventHandler<ContextMenuEvent>() { //鼠标点击图标事件
@@ -77,7 +132,7 @@ public class DiskMainUI extends Application {
             });
 
 
-            Label diskLabel = new Label("磁盘");
+            Label diskLabel = new Label("磁盘情况");
             Image diskImage = new Image("./pictures/diskPic.jpg");
             ImageView diskImageView=new ImageView();
             diskImageView.setSmooth(false);
@@ -93,68 +148,45 @@ public class DiskMainUI extends Application {
                 public void handle(MouseEvent event) {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
                         System.out.println("选中了磁盘图标");
-                        ArrayList<Integer> diskStatus = diskService.getDiskStatus();
                         Stage stage5=new Stage();
                         BorderPane pn=new BorderPane();
-                        int ano=0;//剩余磁盘量
-                        int aal=0;//占用的磁盘量
-                        int sum=0;
+                        int sumDisk = 128*256;//总磁盘量
+                        int usedDisk = fileService.getDiskUsedStatus();//占用的磁盘量
+                        int emptyDisk = sumDisk-usedDisk;;//空闲磁盘量
+                       /* ArrayList<Integer> diskStatus = diskService.getDiskStatus();
                         for (Integer i:diskStatus){
-                            sum+=256;
-                            aal+=i;
-                        }
-                        ano=sum-aal;
-                       /* for (int i = 0; i < 512; i++) {
-                            if(sys.bitmap[i]==1){
-                                ano++;
-                            }else {
-                                aal++;
-                            }
+                            sumDisk+=256;
+                            usedDisk+=i;
                         }*/
-                        int s=ano/2;
                         HBox h1=new HBox();
                         Label la1=new Label("磁盘块总量为");
-                        Label la11=new Label(String.valueOf(sum));
+                        Label la11=new Label(String.valueOf(sumDisk));
                         h1.getChildren().addAll(la1,la11);
                         HBox h2=new HBox();
                         Label la2=new Label("剩余磁盘量");
-                        Label la22=new Label(String.valueOf(ano));
+                        Label la22=new Label(String.valueOf(emptyDisk));
                         h2.getChildren().addAll(la2,la22);
                         HBox h3=new HBox();
                         Label la3=new Label("占用的磁盘量");
-                        Label la33=new Label(String.valueOf(aal));
+                        Label la33=new Label(String.valueOf(usedDisk));
                         h3.getChildren().addAll(la3,la33);
-                        HBox h4=new HBox();
-                        Label la4=new Label("磁盘剩余");
-                        Label la44=new Label(String.valueOf(s)+"kb");
-                        int q=sum/2-s;
 
-                        System.out.println(s);
-                        System.out.println(q);
-
-
-                        h4.getChildren().addAll(la4,la44);
                         VBox ss=new VBox();
                         diskVBox.setSpacing(20);
-                        ss.getChildren().addAll(h1,h2,h3,h4);
+                        ss.getChildren().addAll(h1,h2,h3);
                         pn.setTop(ss);
 
-
-
-                        PieChart.Data d1=new PieChart.Data("占用磁盘", s);
-                        PieChart.Data d2=new PieChart.Data("空闲磁盘", q);
+                        PieChart.Data d1=new PieChart.Data("占用磁盘", usedDisk);
+                        PieChart.Data d2=new PieChart.Data("空闲磁盘", emptyDisk);
                         ObservableList<PieChart.Data> datelistDatas= FXCollections.observableArrayList();
                         datelistDatas.addAll(d1,d2);
                         PieChart pieChart=new PieChart(datelistDatas);
 
                         pn.setCenter(pieChart);
-
-
                         Scene scene=new Scene(pn,400,400);
                         stage5.setScene(scene);
 
-
-                        stage5.setTitle("磁盘管理");
+                        stage5.setTitle("磁盘使用情况");
                         stage5.show();
                     }
                 }
@@ -179,13 +211,35 @@ public class DiskMainUI extends Application {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
                         System.out.println("选中了返回按钮");
                         primaryStage.close();
-                        //sys.save();执行保存磁盘的操作
+                        fileService.closeMethod();
                     }
                 }
             });
 
+            Label formatLabel = new Label("格式化");
+            Image formatImage = new Image("./pictures/formatDiskPic.jpg");
+            ImageView formatImageView = new ImageView();
+            formatImageView.setSmooth(false);
+            formatImageView.setFitWidth(zoomProperty.get() * 2);
+            formatImageView.setFitHeight(zoomProperty.get() * 2);  //控制图片的大小
+            formatImageView.setPreserveRatio(false);
+            formatImageView.setImage(formatImage);
+            VBox formatVBox = new VBox();
+            formatVBox.getChildren().addAll(formatImageView,formatLabel);
+
+            //点击返回按钮，退出界面
+            formatVBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
+                        System.out.println("选中了格式化按钮");
+                        fileService.formatDisk();
+                    }
+                }
+            });
 
             flowPane.getChildren().add(backVBox);
+            flowPane.getChildren().add(formatVBox);
             flowPane.getChildren().add(diskVBox);
 
             //加载根目录下的主文件
@@ -242,11 +296,6 @@ public class DiskMainUI extends Application {
                             break;
                         }
                     }
-                    /*FileNode fileNode = FileNode.getFileNode(choicedNodeName);
-                    //if(fileNode != null){
-                    if(true){
-
-                    }*/
                 }
             });
 
@@ -256,7 +305,7 @@ public class DiskMainUI extends Application {
                 public void handle(ActionEvent event) {
                     //创建新的stage  从event里面获得按钮
                     String name = choicedNodeName;
-                    System.out.println("ViewUtils.getFirstName(name),ViewUtils.getExtendName(name)---"
+                    System.out.println("choicedNodeName" + choicedNodeName + "ViewUtils.getFirstName(name),ViewUtils.getExtendName(name)---"
                             + ViewUtils.getFirstName(name).trim() + "," + ViewUtils.getExtendName(name));
                     //if(fileNode != null){
                     if(true){
@@ -276,17 +325,36 @@ public class DiskMainUI extends Application {
                                     choicedNodePane = fileDirPane;
                                 }
                             });
+                            //创建关闭按钮
+                            VBox backBox = fileUI("关闭" ,"关闭");
+                            fileDirPane.getChildren().add(backBox);
+
                             //upsetUI(name,pane1);//文件夹显示
                             loadUI(name,fileDirPane);
-                            Scene fileDirScene = new Scene(fileDirPane, 300, 200);
+                            Scene fileDirScene = new Scene(fileDirPane, 500, 400);
                             fileDirStage.setScene(fileDirScene);
+                            fileDirStage.setMaximized(true);
                             fileDirStage.show();
+                            //fileDirStage.setAlwaysOnTop(true);
+
+                            backBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent event) {
+                                    if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
+                                        System.out.println("选中了" + name + " 中返回按钮");
+                                        //pane_close
+                                        fileDirStage.close();
+                                        fileService.backward();
+                                        fileService.closeMethod();
+                                    }
+                                }
+                            });
                         }
                         else if(ViewUtils.getExtendName(name).equals("T")){
                             //打开的是文本文件
                             System.out.println("打开的是文本文件");
                             Stage txtFileStage = new Stage();
-                            //String txtString=sys.read(node); //获取文本文件
+                            //获取文本文件
                             String[] inFile = fileService.openFile(ViewUtils.getFirstName(name),ViewUtils.getExtendName(name));
 
                             String txtString = "";
@@ -339,7 +407,7 @@ public class DiskMainUI extends Application {
                 }
             });
 
-            nodeRightClickedMenu.getItems().addAll(openMenuItem, deleteMenuItem, renameMenuItem);
+            nodeRightClickedMenu.getItems().addAll(openMenuItem, copyMenuItem, deleteMenuItem, renameMenuItem, changeAttrMenuItem);
 
             blankRightClickedEvent =new EventHandler<ContextMenuEvent>() {
                 @Override
@@ -358,10 +426,46 @@ public class DiskMainUI extends Application {
                         String aString = aLabel.getText();
                         if (aString.equals(choicedNodeName)) {
                             choicedNodePane.getChildren().remove(aNode);
-                            //sys.delete(choicedNodeName);  //删除文件
+                            //删除文件
                             if(!fileService.deleteFile(ViewUtils.getFirstName(choicedNodeName),ViewUtils.getExtendName(choicedNodeName)))
                                 ViewUtils.showAlter("删除失败！");
                             break;
+                        }
+                    }
+                }
+            });
+
+            copyMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    copyFileExtendName = ViewUtils.getExtendName(choicedNodeName);
+                    fileService.copyFile(ViewUtils.getFirstName(choicedNodeName),copyFileExtendName);
+                    System.out.println("copyMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
+                            + ",extendName:" + ViewUtils.getExtendName(choicedNodeName));
+                }
+            });
+
+            changeAttrMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    String newExtendName = ViewUtils.getName("请输入新的属性（T/E/D）");
+                    fileService.changeFileAttribute(ViewUtils.getFirstName(choicedNodeName),newExtendName);
+                    System.out.println("changeAttrMenuItem.setOnAction  name:" + ViewUtils.getFirstName(choicedNodeName)
+                            + ",newExtendName:" + newExtendName);
+                }
+            });
+
+            pasteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    if(!fileService.pasteFile()){
+                        ViewUtils.showAlter("粘贴失败！");
+                    } else{
+                        //新建一个对应属性的图标
+                        if (copyFileExtendName == "T" || copyFileExtendName == "E" || copyFileExtendName == "D"){
+                            String pasteFirstName = ViewUtils.getName("请输入新的文件名");
+                            VBox aVBox = fileUI(pasteFirstName+ViewUtils.getFullExtend(copyFileExtendName),copyFileExtendName);
+                            choicedNodePane.getChildren().add(aVBox);
                         }
                     }
                 }
@@ -386,7 +490,6 @@ public class DiskMainUI extends Application {
                     fileService.createFile(name,"D","W",0);
                     aVBox.addEventHandler(ContextMenuEvent.ANY, nodeRightClickedEvent);
                     choicedNodePane.getChildren().add(aVBox);
-                    //sys.mkdir("新建文件夹");
                 }
             });
 
@@ -570,7 +673,11 @@ public class DiskMainUI extends Application {
                         public void handle(MouseEvent event) {
                             String name = ViewUtils.getName();
                             fileService.createFile(name,"E","W",0);
-                            fileService.saveFile(name,"E",(String[]) outExeFile.toArray());
+                            String[] outFiles = new String[outExeFile.size()];
+                            for(int i=0;i<outExeFile.size();i++){
+                                outFiles[i] = outExeFile.get(i);
+                            }
+                            fileService.saveFile(name,"E", outFiles);
                             exeFileStage.close();
                             VBox aVBox=fileUI(name+".exe","E");
                             choicedNodePane.getChildren().add(aVBox);
@@ -587,21 +694,35 @@ public class DiskMainUI extends Application {
             blankRightClickedMenu.getItems().add(newTxtFileMenuItem );
             blankRightClickedMenu.getItems().add(newExeFileMenuItem);
             blankRightClickedMenu.getItems().add(newFileDirMenuItem);
+            blankRightClickedMenu.getItems().add(pasteMenuItem);
 
-
-//	root.setOnContextMenuRequested(blankRightClickedEvent);
             diskMainBorderPane.addEventHandler(ContextMenuEvent.ANY, blankRightClickedEvent);
             Scene diskMainScene = new Scene(diskMainBorderPane);
-            //scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             primaryStage.setScene(diskMainScene);
             primaryStage.setMaximized(true);
+            primaryStage.setTitle("磁盘管理");
             primaryStage.show();
+
+            //primaryStage.setAlwaysOnTop(true);
+            isExisted = true;
+
+            // 监听窗口关闭事件
+            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    isExisted = false;
+                }
+            });
+
+            // 绑定 isMinimized 值
+            bindIsMinimized(primaryStage.getScene());
+
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
-    //怎么获得文件夹中文件的类型？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+    //获得文件夹中文件的类型:Character.toString((char)fileUtils.binaryToDec(fileNames[i+3]))
     private void loadUI(String name,Pane pane){//打开文件夹，目录加载方法
     // name:带后缀的全名
         String[] fileNames = fileService.openFile(ViewUtils.getFirstName(name).trim(),"D");
@@ -611,81 +732,32 @@ public class DiskMainUI extends Application {
             firstName = Character.toString((char)fileUtils.binaryToDec(fileNames[i]))
                     + Character.toString((char)fileUtils.binaryToDec(fileNames[i+1]))
                     + Character.toString((char)fileUtils.binaryToDec(fileNames[i+2]));
-            System.out.println("loadUI 's firstName:" + firstName + ",,extendName:"
-                    + Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])));
-            if (Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])).equals("D")
-                    ||Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])).equals("T")
-                    ||Character.toString((char)fileUtils.binaryToDec(fileNames[i+3])).equals("E")){
-                VBox vBox = fileUI(firstName,fileNames[i+3]);
+            String extendName = Character.toString((char)fileUtils.binaryToDec(fileNames[i+3]));
+            System.out.println("loadUI 's firstName:" + firstName + ",,extendName:" + extendName);
+            if (extendName.equals("D") ||extendName.equals("T") ||extendName.equals("E")){
+                System.out.println("VBox vBox = fileUI(firstName,fileNames[i+3]);" + firstName + extendName);
+                VBox vBox = fileUI(firstName + ViewUtils.getFullExtend(extendName), extendName);
                 pane.getChildren().add(vBox);
             }
         }
     }
-    /*
-    private void upsetUI(String name,Pane pane) {//打开文件夹，目录加载方法
-        sys.cd(name);
-        for (int i = 0; i < sys.node_array.size(); i++) {
 
-            entity.FileNode node=sys.node_array.get(i);
-
-
-
-            if (node.getParentnode()==sys.getNum_cur()) {
-
-                int num=node.getType();
-                String filename=node.getFilename();
-                VBox vBox=fileUI(num, filename);
-                pane.getChildren().add(vBox);
-
-
-
-
-            }
-
-        }
-    }
-    /*
-
-    private void upsetUI2(Pane pane) {//主页面加载方法
-
-        for (int i = 0; i < sys.node_array.size(); i++) {
-
-            entity.FileNode node=sys.node_array.get(i);
-
-
-
-            if (node.getParentnode()==sys.getNum_cur()) {
-
-                int num=node.getType();
-                String filename=node.getFilename();
-                VBox vBox=fileUI(num, filename);
-                pane.getChildren().add(vBox);
-
-
-
-
-            }
-
-        }
-    }
-
-     */
     //创造一个文件或文件夹
-    public VBox fileUI(String name,String extendName){// name:带后缀的全名
+    private VBox fileUI(String fullName,String extendName){// fullName:带后缀的全名
         DoubleProperty zoomProperty = new SimpleDoubleProperty(20);
         Label label;
         Image image;
         if (extendName.equals("T")) {
-            label = new Label(name);
+            label = new Label(fullName);
             image = new Image("pictures/txtFilePic.jpg");
         }else if(extendName.equals("E")){
-            label = new Label(name);
+            label = new Label(fullName);
             image = new Image("./pictures/exeFilePic.png");
         }else if(extendName.equals("D")){
-            label = new Label(name);
+            label = new Label(fullName);
             image = new Image("./pictures/fileDirPic.jpg");
         }else {
-            label = new Label(name);
+            label = new Label(fullName);
             image = new Image("./pictures/backPic.jpg");
         }
 

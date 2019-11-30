@@ -1,8 +1,6 @@
 package test;
 
-import disk.bean.DiskBlock;
-import disk.bean.DiskByte;
-import disk.service.DiskService;
+import file.util.FileUtils;
 import org.junit.Test;
 
 /**
@@ -13,13 +11,8 @@ import org.junit.Test;
 public class ReadDiskTest {
     @Test
     public void getDisk() {
-        DiskService service = DiskService.getInstance();
-        DiskBlock block = service.getDiskBlock(3);
-        for (DiskByte tmpByte :
-                block.getBytes()) {
-            System.out.print(tmpByte.getDiskByte()+" ");
-        }
-        service.modifyDisk();
+        FileUtils utils = FileUtils.getInstance();
+        System.out.println((char) utils.binaryToDec("01010100"));
     }
 
 }

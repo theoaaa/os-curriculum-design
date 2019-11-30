@@ -66,9 +66,8 @@ public class FileService {
      * @param fileName 目录名
      * @return 目录
      */
-    public String[] backward(String fileName){
-        tables.backward();
-        return openFile(fileName,"D");
+    public void  backward(){
+        tables.getRoot();
     }
 
     /**

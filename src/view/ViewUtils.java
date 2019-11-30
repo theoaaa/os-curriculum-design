@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public class ViewUtils {
 
-    public static String getName(){
+    public static String getName(String showTitle){
         TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("请输入名字");
+        dialog.setTitle(showTitle);
         dialog.setHeaderText("");
         dialog.setContentText("");
         // Traditional way to get the response value.
@@ -22,6 +22,11 @@ public class ViewUtils {
         }
         return null;
     }
+
+    public static String getName(){
+        return ViewUtils.getName("请输入名字");
+    }
+
 
     public static void showAlter(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, msg);
