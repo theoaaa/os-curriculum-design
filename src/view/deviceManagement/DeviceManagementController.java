@@ -42,14 +42,22 @@ public class DeviceManagementController {
 
         // 显示正在使用的设备
         if(deviceList.size() >= 7){
-            A01.setText(deviceList.get(0).getPcb().getProcessID()+"");
-            A02.setText(deviceList.get(1).getPcb().getProcessID()+"");
-            B01.setText(deviceList.get(2).getPcb().getProcessID()+"");
-            B02.setText(deviceList.get(3).getPcb().getProcessID()+"");
-            B03.setText(deviceList.get(4).getPcb().getProcessID()+"");
-            C01.setText(deviceList.get(5).getPcb().getProcessID()+"");
-            C02.setText(deviceList.get(6).getPcb().getProcessID()+"");
-            C03.setText(deviceList.get(7).getPcb().getProcessID()+"");
+            if (deviceList.get(0).getPcb() != null)
+                A01.setText(deviceList.get(0).getPcb().getProcessID()+"");
+            if (deviceList.get(1).getPcb() != null)
+                A02.setText(deviceList.get(1).getPcb().getProcessID()+"");
+            if (deviceList.get(2).getPcb() != null)
+                B01.setText(deviceList.get(2).getPcb().getProcessID()+"");
+            if (deviceList.get(3).getPcb() != null)
+                B02.setText(deviceList.get(3).getPcb().getProcessID()+"");
+            if (deviceList.get(4).getPcb() != null)
+                B03.setText(deviceList.get(4).getPcb().getProcessID()+"");
+            if (deviceList.get(5).getPcb() != null)
+                C01.setText(deviceList.get(5).getPcb().getProcessID()+"");
+            if (deviceList.get(6).getPcb() != null)
+                C02.setText(deviceList.get(6).getPcb().getProcessID()+"");
+            if (deviceList.get(7).getPcb() != null)
+                C03.setText(deviceList.get(7).getPcb().getProcessID()+"");
         }
         // 显示等待队列中的进程
         String context = "";
