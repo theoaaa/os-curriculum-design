@@ -12,12 +12,12 @@ import java.util.ArrayList;
 public class DeviceManagementController {
 
     // 设备列表
-    private static ArrayList<Device> deviceList = new ArrayList<>(8);
+    private ArrayList<Device> deviceList = new ArrayList<>(8);
 
     // 设备等待使用进程队列
-    private static ArrayList<PCB> aWaitingList = new ArrayList<>();
-    private static ArrayList<PCB> bWaitingList = new ArrayList<>();
-    private static ArrayList<PCB> cWaitingList = new ArrayList<>();
+    private ArrayList<PCB> aWaitingList = new ArrayList<>();
+    private ArrayList<PCB> bWaitingList = new ArrayList<>();
+    private ArrayList<PCB> cWaitingList = new ArrayList<>();
     @FXML TextField A01;
     @FXML TextField A02;
     @FXML TextField B01;
