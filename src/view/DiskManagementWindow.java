@@ -772,7 +772,7 @@ public class DiskManagementWindow extends Application {
 
     //获得文件夹中文件的类型:Character.toString((char)fileUtils.binaryToDec(fileNames[i+3]))
     private void loadUI(String name,Pane pane){//打开文件夹，目录加载方法
-    // name:带后缀的全名
+        // name:带后缀的全名
         String[] fileNames = fileService.openFile(ViewUtils.getFirstName(name).trim(),"D");
         System.out.println("private void loadUI(String name,Pane pane){//打开文件夹，目录加载方法    " + name);
         String firstName = "";
@@ -829,10 +829,5 @@ public class DiskManagementWindow extends Application {
         });
         return vBox;
     }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
 
 }
