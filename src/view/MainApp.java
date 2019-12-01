@@ -1,10 +1,12 @@
 package view;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.processManege.CPU;
 import view.home.HomeController;
 import view.processManagement.ProcessManagementController;
@@ -27,6 +29,12 @@ public class MainApp extends Application {
 
         // 全屏
         primaryStage.setMaximized(true);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                CPU.shutdown();
+            }
+        });
     }
 
     /**

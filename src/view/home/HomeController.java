@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.processManege.CPU;
+import view.DiskManagementWindow;
 import view.deviceManagement.DeviceManagementWindow;
 import view.memoryManagement.MemoryManagementWindow;
 import view.processManagement.ProcessManagementWindow;
@@ -62,7 +63,8 @@ public class HomeController {
 
     @FXML
     private void openFileManagement() {
-
+        DiskManagementWindow window = DiskManagementWindow.getInstance();
+        window.show();
     }
 
     @FXML
