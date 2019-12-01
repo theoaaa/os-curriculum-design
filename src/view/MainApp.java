@@ -21,7 +21,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        CPU.work();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("操作系统");
 
