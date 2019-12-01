@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.deviceManagement.DeviceManagementController">
+   <children>
+      <Pane prefHeight="400.0" prefWidth="800.0">
+         <children>
+            <Label layoutX="53.0" layoutY="73.0" text="设备A" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="233.0" text="设备B" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="193.0" text="设备B" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="153.0" text="设备B" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="113.0" text="设备A" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="313.0" text="设备C" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="273.0" text="设备C" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="53.0" layoutY="353.0" text="设备C" textFill="#a19393">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
+            <Label layoutX="189.0" layoutY="26.0" text="进程（使用中）" textFill="#a19393">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="430.0" layoutY="26.0" text="进程（等待使用）" textFill="#a19393">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="AWaitingList" editable="false" layoutX="430.0" layoutY="73.0" prefHeight="62.0" prefWidth="340.0" />
+            <TextField fx:id="BWaitingList" editable="false" layoutX="430.0" layoutY="153.0" prefHeight="99.0" prefWidth="340.0" />
+            <TextField fx:id="CWaitingList" editable="false" layoutX="430.0" layoutY="272.0" prefHeight="99.0" prefWidth="340.0" />
+            <Line endX="800.0" layoutY="143.0" />
+            <Line endX="800.0" layoutY="263.0" />
+            <Line endX="800.0" layoutY="61.0" />
+            <TextField fx:id="A01" editable="false" layoutX="167.0" layoutY="66.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="A02" editable="false" layoutX="167.0" layoutY="104.0" prefHeight="1.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="B01" editable="false" layoutX="167.0" layoutY="147.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="B02" editable="false" layoutX="167.0" layoutY="186.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="B03" editable="false" layoutX="167.0" layoutY="225.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="C01" editable="false" layoutX="167.0" layoutY="270.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="C02" editable="false" layoutX="167.0" layoutY="309.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="C03" editable="false" layoutX="167.0" layoutY="348.0" prefHeight="20.0" prefWidth="139.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
