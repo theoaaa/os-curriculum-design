@@ -1,11 +1,14 @@
 package view;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.processManege.CPU;
+import view.home.HomeController;
 import view.processManagement.ProcessManagementController;
 
 import java.io.IOException;
@@ -18,7 +21,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        CPU.work();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("操作系统");
 
@@ -26,6 +28,12 @@ public class MainApp extends Application {
 
         // 全屏
         primaryStage.setMaximized(true);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                CPU.shutdown();
+            }
+        });
     }
 
     /**
@@ -33,8 +41,10 @@ public class MainApp extends Application {
      */
     public void initRootLayout() {
         try {
-            // Load root layout from fxml file.
-            rootLayout = (AnchorPane) FXMLLoader.load(MainApp.class.getResource("home/home.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("home/home.fxml"));
+            rootLayout = (AnchorPane) loader.load();
+            HomeController controller = loader.getController();
+            controller.setPrimaryStage(primaryStage);
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);

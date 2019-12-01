@@ -1,10 +1,14 @@
 package view.deviceManagement;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class DeviceManagementWindow extends Application {
     private static DeviceManagementWindow instance;     // 单例模式
@@ -23,15 +27,18 @@ public class DeviceManagementWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DeviceManagementWindow.fxml"));
         Parent root = loader.load();
         controller = loader.getController();
         primaryStage.setTitle("DeviceManagementBlocks");
-        primaryStage.setScene(new Scene(root,800,400));
+        Scene scene = new Scene(root,800,400);
+        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        /*// 设置窗口始终位于顶部
+        // 设置窗口始终位于顶部
         this.primaryStage.setAlwaysOnTop(true);
         isExisted = true;
         // 监听窗口关闭事件
@@ -42,13 +49,13 @@ public class DeviceManagementWindow extends Application {
             }
         });
         // 绑定 isMinimized 值
-        bindIsMinimized(scene);*/
+        bindIsMinimized(scene);
     }
     /**
      * 绑定 isMinimized 值与当前窗口最小化状态
      * @param scene
      */
-    /*private void bindIsMinimized(Scene scene) {
+    private void bindIsMinimized(Scene scene) {
         // 监听窗口 最小化/最大化 事件；oldValue 和 newValue 均表示是否最大化
         scene.getWindow().focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -56,7 +63,7 @@ public class DeviceManagementWindow extends Application {
                 isMinimized =  !newValue;
             }
         });
-    }*/
+    }
 
     /**
      * 显示窗口
@@ -80,9 +87,8 @@ public class DeviceManagementWindow extends Application {
      * 单例模式
      */
     public static DeviceManagementWindow getInstance(){
-        if(isExisted == false && instance == null){
+        if(instance == null){
             instance = new DeviceManagementWindow();
-            isExisted = true;
         }
         return instance;
     }
