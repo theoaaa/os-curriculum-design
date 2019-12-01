@@ -1,6 +1,8 @@
 package model.memoryManage;
 
 import model.processManege.PCB;
+import view.memoryManagement.MemoryManagementController;
+import view.memoryManagement.MemoryManagementWindow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,14 +26,13 @@ public class MemoryManage {
     // 内存进程映射
     private static final Map<PCB, ProcessMemoryBlock> map = new HashMap<>();
 
+    public static MemoryManagementController controller;
+
     // CPU创建PCB时调用，分配内存
     // 传入参数进程控制块和申请大小
     public static boolean memoryAllocate(PCB pcb, int allocSize){
-        // 如果加载的PCB有10个，不能再分配内存
-//        if (pcbMemory.size() == 10){
-//            System.out.println("只能加载10个PCB！");
-//            return false;
-//        }
+        controller = MemoryManagementWindow.getController();
+
         // 分配内存结果
         int allocateResult = checkMemory(allocSize);
         if (allocateResult == -1){
@@ -56,12 +57,16 @@ public class MemoryManage {
         processMemory.setEndAddr(processMemory.getStartAddr() + allocSize -1);
         processMemory.setPcb(pcb);
         processMemory.setMemorySize(allocSize);
+        processMemory.setTakeupRatio((double) allocSize/memorySize);
         processMemoryAllocatedList.add(allocateResult, processMemory);
         map.put(pcb, processMemory);
         for (int i=processMemory.getStartAddr(); i <= processMemory.getEndAddr(); i++){
             memory[i] = 1;
         }
         pcbMemory.add(pcb);
+        // 更新界面显示
+        if (controller != null)
+            controller.updateMessage(processMemoryAllocatedList);
         System.out.println("内存分配成功.");
         return true;
     }
@@ -105,6 +110,8 @@ public class MemoryManage {
     // CPU调用方法回收内存
     // 传入进程控制块
     public static void memoryRecycle(PCB pcb){
+        controller = MemoryManagementWindow.getController();
+
         ProcessMemoryBlock processMemory = map.get(pcb);
         System.out.println(pcb);
         int index = processMemoryAllocatedList.indexOf(processMemory);
@@ -117,6 +124,10 @@ public class MemoryManage {
             memory[i] = 0;
         }
         pcbMemory.remove(pcb);
+
+        // 更新界面显示
+        if (controller != null)
+            controller.updateMessage(processMemoryAllocatedList);
     }
 
     public static void show(){
