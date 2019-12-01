@@ -830,4 +830,9 @@ public class DiskManagementWindow extends Application {
         return vBox;
     }
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+
 }
