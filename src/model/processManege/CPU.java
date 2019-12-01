@@ -200,12 +200,4 @@ public class CPU {
     public static void shutdown(){
         cachedThreadPool.shutdownNow();
     }
-    //测试方法
-    public static void work() {
-//        ProcessControl.create(new File("resources/test.e"));
-//        ProcessControl.create(new File("resources/test.e"));
-//        ProcessControl.create(new File("resources/test.e"));
-//        ProcessControl.create(new File("resources/test.e"));
-        CPU cpu = new CPU();
-    }
 }
