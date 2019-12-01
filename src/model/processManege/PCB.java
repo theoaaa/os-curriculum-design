@@ -46,7 +46,7 @@ public class PCB {
     }
 
     // constructor
-    private PCB(){}
+    public PCB(){}
 
     public Integer[] readRegister(){
         return this.registers;
