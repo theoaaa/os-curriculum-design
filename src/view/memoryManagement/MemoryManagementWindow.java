@@ -1,17 +1,21 @@
 package view.memoryManagement;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class MemoryManagementWindow extends Application {
     private static MemoryManagementWindow instance;    // 单例模式
 
     private static MemoryManagementController controller = null;   // 界面controller
 
-    private static Stage primaryStage;           // 窗口 Stage 对象
+    private Stage primaryStage;           // 窗口 Stage 对象
 
     private static Boolean isExisted = false;    // 窗口是否已存在
 
@@ -23,15 +27,18 @@ public class MemoryManagementWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MemoryManagementWindow.fxml"));
         Parent root = loader.load();
         controller = loader.getController();
         primaryStage.setTitle("MemoryManagementBlock");
-        primaryStage.setScene(new Scene(root,850,500));
+        Scene scene = new Scene(root,850,500);
+        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        /*// 设置窗口始终位于顶部
+        // 设置窗口始终位于顶部
         this.primaryStage.setAlwaysOnTop(true);
         isExisted = true;
         // 监听窗口关闭事件
@@ -42,14 +49,14 @@ public class MemoryManagementWindow extends Application {
             }
         });
         // 绑定 isMinimized 值
-        bindIsMinimized(scene);*/
+        bindIsMinimized(scene);
     }
 
     /**
      * 绑定 isMinimized 值与当前窗口最小化状态
      * @param scene
      */
-    /*private void bindIsMinimized(Scene scene) {
+    private void bindIsMinimized(Scene scene) {
         // 监听窗口 最小化/最大化 事件；oldValue 和 newValue 均表示是否最大化
         scene.getWindow().focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -57,7 +64,7 @@ public class MemoryManagementWindow extends Application {
                 isMinimized =  !newValue;
             }
         });
-    }*/
+    }
 
     /**
      * 显示窗口
@@ -81,9 +88,8 @@ public class MemoryManagementWindow extends Application {
      * 单例模式
      */
     public static MemoryManagementWindow getInstance(){
-        if(isExisted == false && instance == null){
+        if(instance == null){
             instance = new MemoryManagementWindow();
-            isExisted = true;
         }
         return instance;
     }
