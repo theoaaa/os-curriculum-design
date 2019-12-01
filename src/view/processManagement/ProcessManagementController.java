@@ -8,7 +8,7 @@ import javafx.scene.control.ListView;
 import model.processManege.CPU;
 import model.processManege.PCB;
 
-public class  ProcessManagementController {
+public class ProcessManagementController {
     @FXML
     private Label systemTime;
 
@@ -44,6 +44,7 @@ public class  ProcessManagementController {
 
     /**
      * 更新界面数据
+     *
      * @param pcb
      */
     public void updateData(PCB pcb) {
@@ -69,12 +70,14 @@ public class  ProcessManagementController {
 
         readyList.clear();
         for (PCB readyPCB : PCB.getReadyProcessPCBList()) {
-            readyList.add(readyPCB.getProcessID().toString());
+            if (readyPCB.getProcessID() != null)
+                readyList.add(readyPCB.getProcessID().toString());
         }
 
         blockingList.clear();
         for (PCB blockingPCB : PCB.getBlockedProcessPCBList()) {
-            blockingList.add(blockingPCB.getProcessID().toString() + "；已经等待：" + blockingPCB.getBlockedTime());
+            if (blockingPCB.getProcessID() != null)
+                blockingList.add(blockingPCB.getProcessID().toString() + "；已经等待：" + blockingPCB.getBlockedTime());
         }
     }
 
