@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
+import model.memoryManage.MemoryManage;
 import model.memoryManage.ProcessMemoryBlock;
 import model.processManege.PCB;
 
@@ -26,14 +27,15 @@ public class MemoryManagementController {
 
     public  void initialize() {
         // 测试数据
-        /*PCB pcb = new PCB();
-        ProcessMemoryBlock p1 = new ProcessMemoryBlock(512,12,38,pcb,true);
-        ProcessMemoryBlock p2 = new ProcessMemoryBlock(512,65,127,pcb,true);
-        ProcessMemoryBlock p3 = new ProcessMemoryBlock(512,256,312,pcb,false);
-        processMemoryAllocatedList.add(p1);
-        processMemoryAllocatedList.add(p2);
-        processMemoryAllocatedList.add(p3);*/
+//        PCB pcb = new PCB();
+//        ProcessMemoryBlock p1 = new ProcessMemoryBlock(512,12,38,pcb,true,26/512.0);
+//        ProcessMemoryBlock p2 = new ProcessMemoryBlock(512,65,127,pcb,true,(127-65)/512.0);
+//        ProcessMemoryBlock p3 = new ProcessMemoryBlock(512,256,312,pcb,false,(312-256)/512.0);
+//        processMemoryAllocatedList.add(p1);
+//        processMemoryAllocatedList.add(p2);
+//        processMemoryAllocatedList.add(p3);
 
+        processMemoryAllocatedList = MemoryManage.getMemoryUsage();
         color[0] = "#00FFFF";
         color[1] = "#FF0000";
         color[2] = "#FFD700";
