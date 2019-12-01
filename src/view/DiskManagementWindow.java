@@ -132,7 +132,7 @@ public class DiskManagementWindow extends Application {
 
 
             Label diskLabel = new Label("磁盘情况");
-            Image diskImage = new Image("./pictures/diskPic.jpg");
+            Image diskImage = new Image("images/diskPic.jpg");
             ImageView diskImageView=new ImageView();
             diskImageView.setSmooth(false);
             diskImageView.setFitWidth(zoomProperty.get() * 2);
@@ -192,7 +192,7 @@ public class DiskManagementWindow extends Application {
 
 
             Label backLabel = new Label("返回");
-            Image backImage = new Image("./pictures/backPic.jpg");
+            Image backImage = new Image("images/backPic.jpg");
             ImageView backImageView = new ImageView();
             backImageView.setSmooth(false);
             backImageView.setFitWidth(zoomProperty.get() * 2);
@@ -214,7 +214,7 @@ public class DiskManagementWindow extends Application {
             });
 
             Label formatLabel = new Label("格式化");
-            Image formatImage = new Image("./pictures/formatDiskPic.jpg");
+            Image formatImage = new Image("images/formatDiskPic.jpg");
             ImageView formatImageView = new ImageView();
             formatImageView.setSmooth(false);
             formatImageView.setFitWidth(zoomProperty.get() * 2);
@@ -795,16 +795,16 @@ public class DiskManagementWindow extends Application {
         Image image;
         if (extendName.equals("T")) {
             label = new Label(fullName);
-            image = new Image("pictures/txtFilePic.jpg");
+            image = new Image("images/txtFilePic.jpg");
         }else if(extendName.equals("E")){
             label = new Label(fullName);
-            image = new Image("./pictures/exeFilePic.png");
+            image = new Image("images/exeFilePic.png");
         }else if(extendName.equals("D")){
             label = new Label(fullName);
-            image = new Image("./pictures/fileDirPic.jpg");
+            image = new Image("images/fileDirPic.jpg");
         }else {
             label = new Label(fullName);
-            image = new Image("./pictures/backPic.jpg");
+            image = new Image("images/backPic.jpg");
         }
 
         ImageView imageView=new ImageView();
