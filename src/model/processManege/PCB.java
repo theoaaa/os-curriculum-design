@@ -83,7 +83,7 @@ public class PCB {
 
     public void increaseCurrentInstructionIndex(){
         currentInstructionIndex++;
-        if(processInstructions != null && currentInstructionIndex == processInstructions.size())
+        if(processInstructions == null || currentInstructionIndex >= processInstructions.size())
             this.processState = END;
     }
 
