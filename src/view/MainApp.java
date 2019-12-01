@@ -25,6 +25,7 @@ public class MainApp extends Application {
         this.primaryStage.setTitle("操作系统");
 
         initRootLayout();
+        CPU.work();
 
         // 全屏
         primaryStage.setMaximized(true);

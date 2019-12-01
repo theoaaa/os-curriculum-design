@@ -30,6 +30,8 @@ public class CPU {
     //线程池
     private static ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
+    private static CPU cpu = new CPU();
+
     private CPU() {
         run();
     }
@@ -82,13 +84,15 @@ public class CPU {
             private PCB getReadyProcessPCB() {
                 List<PCB> readyProcessPCBList = PCB.getReadyProcessPCBList();
                 PCB pcb = null;
-                if (!readyProcessPCBList.isEmpty()) {
-                    pcb = readyProcessPCBList.get(0);
-                    readyProcessPCBList.remove(0);
+                synchronized (readyProcessPCBList) {
+                    if (!readyProcessPCBList.isEmpty()) {
+                        pcb = readyProcessPCBList.get(0);
+                        readyProcessPCBList.remove(0);
 
-                    pcb.setProcessState(PCB.EXECUTING);
-                    pcb.resetRestTime();
-                    reg = pcb.readRegister();
+                        pcb.setProcessState(PCB.EXECUTING);
+                        pcb.resetRestTime();
+                        reg = pcb.readRegister();
+                    }
                 }
                 return pcb;
             }
@@ -189,7 +193,11 @@ public class CPU {
             Platform.runLater(new Runnable() {
                                   @Override
                                   public void run() {
-                                      controller.updateData(pcb.getProcessID() == null? null : pcb);
+                                      if (pcb != null && pcb.getProcessID() != null) {
+                                          controller.updateData(pcb);
+                                      } else {
+                                          controller.updateData(null);
+                                      }
                                   }
                               }
             );
@@ -197,8 +205,12 @@ public class CPU {
     }
 
     //关机
-    public static void shutdown(){
+    public static void shutdown() {
         cachedThreadPool.shutdownNow();
+    }
+
+    public static void work() {
+        cpu.run();
     }
 
 

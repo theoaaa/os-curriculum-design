@@ -29,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.processManege.ProcessControl;
 
 import java.util.ArrayList;
 
@@ -389,8 +390,7 @@ public class DiskManagementWindow extends Application {
                                 txtFileStage.setScene(txtFileScene);
                                 txtFileStage.show();
                             } else {
-                                //TODO:取消注释
-                                //ProcessControl.create(inFile);
+                                ProcessControl.create(inFile);
                             }
                         }
                     }

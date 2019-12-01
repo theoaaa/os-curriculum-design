@@ -68,13 +68,17 @@ public class  ProcessManagementController {
         remainTimePart.setText(pcb.getRestTime() + "");
 
         readyList.clear();
-        for (PCB readyPCB : PCB.getReadyProcessPCBList()) {
-            readyList.add(readyPCB.getProcessID().toString());
+        synchronized (PCB.getReadyProcessPCBList()) {
+            for (PCB readyPCB : PCB.getReadyProcessPCBList()) {
+                readyList.add(readyPCB.getProcessID().toString());
+            }
         }
 
         blockingList.clear();
-        for (PCB blockingPCB : PCB.getBlockedProcessPCBList()) {
-            blockingList.add(blockingPCB.getProcessID().toString() + "；还需等待：" );
+        synchronized (PCB.getBlockedProcessPCBList()) {
+            for (PCB blockingPCB : PCB.getBlockedProcessPCBList()) {
+                blockingList.add(blockingPCB.getProcessID().toString() + "；还需等待：");
+            }
         }
     }
 

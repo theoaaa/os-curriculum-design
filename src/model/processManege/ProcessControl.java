@@ -16,10 +16,13 @@ public class ProcessControl {
      * 返回结果：可执行文件内容正确与否
      */
     public static boolean create(String[] fileContext){
+        System.out.println(fileContext);
         boolean res = true;
         //从文件中读取指令
         for(int i=0;i<fileContext.length;i++){
-            if(StringUtil.checkInstruction(fileContext[i])){
+            System.out.println(fileContext[i]);
+            if(!StringUtil.checkInstruction(fileContext[i])){
+                System.out.println(StringUtil.checkInstruction(fileContext[i]));
                 res = false;
                 break;
             }
@@ -32,6 +35,7 @@ public class ProcessControl {
             //申请内存
             List<PCB> emptyPCBList = PCB.getEmptyPCBList();
             PCB pcb = null;
+            System.out.println(emptyPCBList.size());
             if (emptyPCBList.size() > 0) {
                 pcb = emptyPCBList.get(0);
                 pcb.setProcessInstructions(instructions);
