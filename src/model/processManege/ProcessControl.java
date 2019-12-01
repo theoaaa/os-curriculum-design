@@ -16,13 +16,10 @@ public class ProcessControl {
      * 返回结果：可执行文件内容正确与否
      */
     public static boolean create(String[] fileContext){
-        System.out.println(fileContext);
         boolean res = true;
         //从文件中读取指令
         for(int i=0;i<fileContext.length;i++){
-            System.out.println(fileContext[i]);
             if(!StringUtil.checkInstruction(fileContext[i])){
-                System.out.println(StringUtil.checkInstruction(fileContext[i]));
                 res = false;
                 break;
             }

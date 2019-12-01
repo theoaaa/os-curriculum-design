@@ -3,6 +3,7 @@ package model.processManege;
 import javafx.application.Platform;
 import model.deviceManage.DeviceAllocation;
 import model.memoryManage.MemoryManage;
+import util.ProcessIdGenerator;
 import util.StringUtil;
 import view.processManagement.ProcessManagementController;
 import view.processManagement.ProcessManagementWindow;
@@ -32,9 +33,7 @@ public class CPU {
 
     private static CPU cpu = new CPU();
 
-    private CPU() {
-        run();
-    }
+    private CPU() {}
 
     // cpu执行进程调度
     public void run() {
@@ -44,10 +43,9 @@ public class CPU {
                 while (true) {
                     PCB pcb = getReadyProcessPCB();
                     if (pcb == null) {
-                        System.out.println("就绪队列为空");
                         try {
                             showData(null);
-                            Thread.sleep(SLEEP_TIME_FOR_EACH_INSTRUCTMENT);
+                            Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -77,7 +75,6 @@ public class CPU {
                                 showData(pcb);
                                 //检测并处理异常
                                 handleInterrupt(pcb);
-                                System.out.println(PCB.getReadyProcessPCBList());
                             }
                         }
                     }
@@ -197,7 +194,6 @@ public class CPU {
             Platform.runLater(() -> {
                         if (pcb != null) {
                             if (pcb != null && pcb.getProcessID() != null) {
-                                System.out.println(pcb);
                                 controller.updateData(pcb);
                             } else {
                                 controller.updateData(null);
