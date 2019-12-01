@@ -16,7 +16,6 @@ import javax.swing.text.html.ImageView;
 
 public class HomeController {
 
-    @FXML private VBox userInterfaceBox;
 
     @FXML private VBox fileManagementBox;
 
@@ -29,7 +28,6 @@ public class HomeController {
     private Stage primaryStage;
 
     public void initialize() {
-        setIconActive(userInterfaceBox);
         setIconActive(fileManagementBox);
         setIconActive(deviceManagementBox);
         setIconActive(storageManagementBox);
@@ -54,11 +52,6 @@ public class HomeController {
                 iconBox.setStyle("");
             }
         });
-    }
-
-    @FXML
-    private void openUserInterface() {
-
     }
 
     @FXML
