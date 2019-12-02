@@ -19,7 +19,7 @@ public class ProcessControl {
         boolean res = true;
         //从文件中读取指令
         for(int i=0;i<fileContext.length;i++){
-            if(StringUtil.checkInstruction(fileContext[i])){
+            if(!StringUtil.checkInstruction(fileContext[i])){
                 res = false;
                 break;
             }
@@ -32,6 +32,7 @@ public class ProcessControl {
             //申请内存
             List<PCB> emptyPCBList = PCB.getEmptyPCBList();
             PCB pcb = null;
+            System.out.println(emptyPCBList.size());
             if (emptyPCBList.size() > 0) {
                 pcb = emptyPCBList.get(0);
                 pcb.setProcessInstructions(instructions);
@@ -52,26 +53,32 @@ public class ProcessControl {
         return res;
     }
     public static void destroy(PCB pcb){
-        MemoryManage.memoryRecycle(pcb);
-        pcb.clearPCBToBlank();
-        if(! waitingExecutableFilePathQueue.isEmpty()){
-            pcb.initPCBToReady(ProcessIdGenerator.generateProcessId());
-            create(waitingExecutableFilePathQueue.get(0));
-            waitingExecutableFilePathQueue.remove(0);
-        }else {
-            PCB.getEmptyPCBList().add(pcb);
+        synchronized (pcb) {
+            MemoryManage.memoryRecycle(pcb);
+            pcb.clearPCBToBlank();
+            if (!waitingExecutableFilePathQueue.isEmpty()) {
+                pcb.initPCBToReady(ProcessIdGenerator.generateProcessId());
+                create(waitingExecutableFilePathQueue.get(0));
+                waitingExecutableFilePathQueue.remove(0);
+            } else {
+                PCB.getEmptyPCBList().add(pcb);
+            }
         }
     }
     public static void block(PCB pcb, int blockReason){
-        pcb.setProcessState(PCB.BLOCK);
-        pcb.setProcessBlockTime(CPU.getSystemTime());
-        pcb.setProcessBlockReason(blockReason);
-        PCB.getBlockedProcessPCBList().add(pcb);
+        synchronized (pcb) {
+            pcb.setProcessState(PCB.BLOCK);
+            pcb.setProcessBlockTime(CPU.getSystemTime());
+            pcb.setProcessBlockReason(blockReason);
+            PCB.getBlockedProcessPCBList().add(pcb);
+        }
     }
 
     public static void awake(PCB pcb){
-        PCB.getBlockedProcessPCBList().remove(pcb);
-        pcb.resetRestTime();
-        PCB.getReadyProcessPCBList().add(pcb);
+        synchronized (pcb) {
+            PCB.getBlockedProcessPCBList().remove(pcb);
+            pcb.resetRestTime();
+            PCB.getReadyProcessPCBList().add(pcb);
+        }
     }
 }
