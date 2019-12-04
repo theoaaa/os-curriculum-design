@@ -168,12 +168,9 @@ public class PCB {
     @Override
     public String toString() {
         return "PCB{" +
-                "register=" + Arrays.toString(registers) +
-                ", processID='" + processID + '\'' +
-                ", restTime=" + restTime +
+                "pcbId=" + pcbId +
                 ", processState=" + processState +
-                ", processBlockReason=" + processBlockReason +
-                ", currentInstructionIndex=" + currentInstructionIndex +
+                ", processBlockTime=" + processBlockTime +
                 ", intermediateResult='" + intermediateResult + '\'' +
                 '}';
     }
