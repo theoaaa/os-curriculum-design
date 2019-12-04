@@ -1,5 +1,6 @@
 package model.deviceManage;
 
+import model.processManege.CPU;
 import model.processManege.PCB;
 import model.device.Device;
 import model.device.DeviceA;
@@ -43,9 +44,6 @@ public class DeviceAllocation {
     private static Map<PCB, Device> map = new HashMap<>();
     // 分配了设备的进程列表
     private static ArrayList<PCB> procList = new ArrayList<>();
-    // 线程池
-    public static ExecutorService deviceThreadPool = Executors.newCachedThreadPool();
-
     public static DeviceManagementController controller;
 
 
@@ -63,12 +61,12 @@ public class DeviceAllocation {
 
     // CPU调用此方法申请分配设备
     // 传入进程控制块， 设备类型（A、B、C）， 占用时间
-    public static boolean allocate(PCB proc, String deviceType, int useTime){
+    public static boolean allocate(PCB proc, String deviceType, int useTime) {
         //System.out.println("调用" + deviceType);
 //        deviceType.toUpperCase();
         controller = DeviceManagementWindow.getController();
-        switch (deviceType){
-            case "A" :
+        switch (deviceType) {
+            case "A":
                 if (freeNumOfDeviceA < 1) {
                     // 进程加入等待队列，进程阻塞
                     aWaitingList.add(proc);
@@ -80,12 +78,12 @@ public class DeviceAllocation {
                         allocateDevice(deviceList.get(i), proc, useTime);
                         // 对应设备空闲数量减1
                         freeNumOfDeviceA--;
-                        ioInterrupt(proc,useTime);
+                        ioInterrupt(proc, useTime);
                         return true;
                     }
                 }
                 return false;
-            case "B" :
+            case "B":
                 if (freeNumOfDeviceB < 1) {
                     // 设备C没有空闲设备
                     bWaitingList.add(proc);
@@ -95,13 +93,13 @@ public class DeviceAllocation {
                     if (!deviceList.get(i).isAllocated) {
                         allocateDevice(deviceList.get(i), proc, useTime);
                         freeNumOfDeviceB--;
-                        ioInterrupt(proc,useTime);
+                        ioInterrupt(proc, useTime);
                         return true;
                     }
                 }
                 return false;
-            case "C" :
-                if (freeNumOfDeviceC<1){
+            case "C":
+                if (freeNumOfDeviceC < 1) {
                     // 设备C没有空闲设备
                     cWaitingList.add(proc);
                     return false;
@@ -110,17 +108,18 @@ public class DeviceAllocation {
                     if (!deviceList.get(i).isAllocated) {
                         allocateDevice(deviceList.get(i), proc, useTime);
                         freeNumOfDeviceC--;
-                        ioInterrupt(proc,useTime);
+                        ioInterrupt(proc, useTime);
                         return true;
                     }
                 }
                 return false;
-            default: return false;
+            default:
+                return false;
         }
     }
 
     // 分配设备，设置设备各类参数
-    private static void allocateDevice(Device device, PCB pcb, int useTime){
+    private static void allocateDevice(Device device, PCB pcb, int useTime) {
         device.setPcb(pcb);
         device.setRemainTime(useTime);
         device.setAllocated(true);
@@ -132,29 +131,24 @@ public class DeviceAllocation {
     }
 
     // 线程中断，模拟设备使用期间IO
-    public static void ioInterrupt(PCB pcb, int remainTime){
-        deviceThreadPool.execute(new Runnable() {
+    public static void ioInterrupt(PCB pcb, int remainTime) {
+        CPU.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                deviceThreadPool.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            // 休眠对应占用时间
-                            Thread.sleep(remainTime);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        deviceRecycle(pcb);
-                    }
-                });
+                try {
+                    // 休眠对应占用时间
+                    Thread.sleep(remainTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                deviceRecycle(pcb);
             }
         });
     }
 
     // CPU调用方法回收
     // 传入进程控制块
-    public static void deviceRecycle(PCB pcb){
+    public static void deviceRecycle(PCB pcb) {
         controller = DeviceManagementWindow.getController();
 
         // 恢复设备参数
@@ -165,7 +159,7 @@ public class DeviceAllocation {
 
         // 唤醒进程进入就绪队列
         ProcessControl.awake(pcb);
-        switch (device.toString()){
+        switch (device.toString()) {
             case "A":
                 freeNumOfDeviceA++;
                 System.out.println("回收A成功");
@@ -199,18 +193,20 @@ public class DeviceAllocation {
     }
 
     // 返回设备使用列表
-    public static ArrayList<Device> getDeviceUsage(){
+    public static ArrayList<Device> getDeviceUsage() {
         return deviceList;
     }
 
     // 返回ABC设备等待进程队列
-    public static ArrayList<PCB> getAWaitingList(){
+    public static ArrayList<PCB> getAWaitingList() {
         return aWaitingList;
     }
-    public static ArrayList<PCB> getBWaitingList(){
+
+    public static ArrayList<PCB> getBWaitingList() {
         return bWaitingList;
     }
-    public static ArrayList<PCB> getCWaitingList(){
+
+    public static ArrayList<PCB> getCWaitingList() {
         return cWaitingList;
     }
 }

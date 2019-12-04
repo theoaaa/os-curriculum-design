@@ -3,13 +3,12 @@ package model.processManege;
 import javafx.application.Platform;
 import model.deviceManage.DeviceAllocation;
 import model.memoryManage.MemoryManage;
-import util.ProcessIdGenerator;
 import util.StringUtil;
 import view.processManagement.ProcessManagementController;
 import view.processManagement.ProcessManagementWindow;
 
-import java.io.*;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,7 +32,8 @@ public class CPU {
 
     private static CPU cpu = new CPU();
 
-    private CPU() {}
+    private CPU() {
+    }
 
     // cpu执行进程调度
     public void run() {
@@ -43,38 +43,37 @@ public class CPU {
                 while (true) {
                     PCB pcb = getReadyProcessPCB();
                     if (pcb == null) {
+                        ++systemTime;
+                        showData(null);
                         try {
-                            showData(null);
-                            Thread.sleep(2000);
+                            Thread.sleep(SLEEP_TIME_FOR_EACH_INSTRUCTMENT);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     } else {
                         psw.initPSW();
                         while (!psw.isProcessEnd() && !psw.isIOInterrupt() && !psw.isTimeSliceUsedUp() && pcb.getProcessID() != null) {
+                            //取指令并将指令指针 +1
+                            String currentInstruction = pcb.getCurrentInstruction();
+                            pcb.increaseCurrentInstructionIndex();
+
+                            if (currentInstruction != null) {
+                                //执行并保存中间结果
+                                executeInstruction(currentInstruction, pcb);
+                            }
+
+                            //剩余时间片减一，修改PSW
+                            pcb.decreaseRestTime();
+                            psw.setTimeSliceUsedUp(pcb.isTimeSliceUsedUp());
+                            psw.setProcessEnd(pcb.isProcessEnd());
+
+                            showData(pcb);
+                            //检测并处理异常
+                            handleInterrupt(pcb);
                             try {
                                 Thread.sleep(SLEEP_TIME_FOR_EACH_INSTRUCTMENT);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
-                            }
-                            synchronized (psw) {
-                                //取指令并将指令指针 +1
-                                String currentInstruction = pcb.getCurrentInstruction();
-                                pcb.increaseCurrentInstructionIndex();
-
-                                if (currentInstruction != null) {
-                                    //执行并保存中间结果
-                                    executeInstruction(currentInstruction, pcb);
-                                }
-
-                                //剩余时间片减一，修改PSW
-                                pcb.decreaseRestTime();
-                                psw.setTimeSliceUsedUp(pcb.isTimeSliceUsedUp());
-                                psw.setProcessEnd(pcb.isProcessEnd());
-
-                                showData(pcb);
-                                //检测并处理异常
-                                handleInterrupt(pcb);
                             }
                         }
                     }
@@ -191,16 +190,30 @@ public class CPU {
     private void showData(PCB pcb) {
         ProcessManagementController controller = ProcessManagementWindow.getController();
         if (controller != null) {
+            final CountDownLatch doneLatch = new CountDownLatch(1);
             Platform.runLater(() -> {
-                        if (pcb != null) {
+                try {
+                    if (pcb != null) {
+                        synchronized (pcb) {
                             if (pcb != null && pcb.getProcessID() != null) {
                                 controller.updateData(pcb);
                             } else {
                                 controller.updateData(null);
                             }
                         }
+                    }else {
+                        controller.updateData(null);
+                    }
+                } finally {
+                    doneLatch.countDown();
+                }
                     }
             );
+            try {
+                doneLatch.await();
+            } catch (InterruptedException e) {
+                // ignore exception
+            }
         }
     }
 
