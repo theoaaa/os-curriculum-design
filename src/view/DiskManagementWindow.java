@@ -209,6 +209,7 @@ public class DiskManagementWindow extends Application {
                 public void handle(MouseEvent event) {
                     if(event.getButton().name().equals(MouseButton.PRIMARY.name())){
                         primaryStage.close();
+                        isExisted = false;
                         fileService.closeMethod();
                     }
                 }
@@ -728,6 +729,7 @@ public class DiskManagementWindow extends Application {
                                 }else {
                                     ViewUtils.showAlter("新建失败！");
                                 }
+                                isExisted = false;
                                 exeFileStage.close();
                             }
                         }
@@ -758,6 +760,7 @@ public class DiskManagementWindow extends Application {
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent event) {
+                    System.out.println("closed");
                     isExisted = false;
                 }
             });
