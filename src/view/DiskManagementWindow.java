@@ -217,7 +217,7 @@ public class DiskManagementWindow extends Application {
 
             Label formatLabel = new Label("格式化");
             Image formatImage = new Image("images/formatDiskPic.jpg");
-            ImageView formatImageView = new ImageView();
+            ImageView                                     formatImageView = new ImageView();
             formatImageView.setSmooth(false);
             formatImageView.setFitWidth(zoomProperty.get() * 2);
             formatImageView.setFitHeight(zoomProperty.get() * 2);  //控制图片的大小
@@ -729,7 +729,6 @@ public class DiskManagementWindow extends Application {
                                 }else {
                                     ViewUtils.showAlter("新建失败！");
                                 }
-                                isExisted = false;
                                 exeFileStage.close();
                             }
                         }

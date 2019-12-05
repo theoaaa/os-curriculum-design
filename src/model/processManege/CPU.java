@@ -42,58 +42,50 @@ public class CPU {
             public void run() {
                 while (true) {
                     PCB pcb = getReadyProcessPCB();
-                    if (pcb == null) {
-                        ++systemTime;
-                        showData(null);
+                    psw.initPSW();
+                    while (!psw.isProcessEnd() && !psw.isIOInterrupt() && !psw.isTimeSliceUsedUp() && pcb.getProcessID() != null) {
+                        //取指令并将指令指针 +1
+                        String currentInstruction = pcb.getCurrentInstruction();
+                        pcb.increaseCurrentInstructionIndex();
+
+                        if (currentInstruction != null) {
+                            //执行并保存中间结果
+                            executeInstruction(currentInstruction, pcb);
+                        }
+
+                        //剩余时间片减一，修改PSW
+                        pcb.decreaseRestTime();
+                        psw.setTimeSliceUsedUp(pcb.isTimeSliceUsedUp());
+                        psw.setProcessEnd(pcb.isProcessEnd());
+
+                        showData(pcb);
+                        //检测并处理异常
+                        handleInterrupt(pcb);
                         try {
                             Thread.sleep(SLEEP_TIME_FOR_EACH_INSTRUCTMENT);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    } else {
-                        psw.initPSW();
-                        while (!psw.isProcessEnd() && !psw.isIOInterrupt() && !psw.isTimeSliceUsedUp() && pcb.getProcessID() != null) {
-                            //取指令并将指令指针 +1
-                            String currentInstruction = pcb.getCurrentInstruction();
-                            pcb.increaseCurrentInstructionIndex();
-
-                            if (currentInstruction != null) {
-                                //执行并保存中间结果
-                                executeInstruction(currentInstruction, pcb);
-                            }
-
-                            //剩余时间片减一，修改PSW
-                            pcb.decreaseRestTime();
-                            psw.setTimeSliceUsedUp(pcb.isTimeSliceUsedUp());
-                            psw.setProcessEnd(pcb.isProcessEnd());
-
-                            showData(pcb);
-                            //检测并处理异常
-                            handleInterrupt(pcb);
-                            try {
-                                Thread.sleep(SLEEP_TIME_FOR_EACH_INSTRUCTMENT);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
                     }
                 }
+
             }
 
             //调度就绪队列执行
             private PCB getReadyProcessPCB() {
                 List<PCB> readyProcessPCBList = PCB.getReadyProcessPCBList();
                 PCB pcb = null;
-                synchronized (readyProcessPCBList) {
-                    if (!readyProcessPCBList.isEmpty()) {
-                        pcb = readyProcessPCBList.get(0);
-                        readyProcessPCBList.remove(0);
-
-                        pcb.setProcessState(PCB.EXECUTING);
-                        pcb.resetRestTime();
-                        reg = pcb.readRegister();
-                    }
+                if (readyProcessPCBList.isEmpty()) {
+                    ProcessControl.create(new String[]{
+                            "11000010", "11000010", "11000010", "11000010", "11000010", "11000010", "11000010"
+                    });
                 }
+                pcb = readyProcessPCBList.get(0);
+                readyProcessPCBList.remove(0);
+
+                pcb.setProcessState(PCB.EXECUTING);
+                pcb.resetRestTime();
+                reg = pcb.readRegister();
                 return pcb;
             }
 
@@ -192,21 +184,21 @@ public class CPU {
         if (controller != null) {
             final CountDownLatch doneLatch = new CountDownLatch(1);
             Platform.runLater(() -> {
-                try {
-                    if (pcb != null) {
-                        synchronized (pcb) {
-                            if (pcb != null && pcb.getProcessID() != null) {
-                                controller.updateData(pcb);
+                        try {
+                            if (pcb != null) {
+                                synchronized (pcb) {
+                                    if (pcb != null && pcb.getProcessID() != null) {
+                                        controller.updateData(pcb);
+                                    } else {
+                                        controller.updateData(null);
+                                    }
+                                }
                             } else {
                                 controller.updateData(null);
                             }
+                        } finally {
+                            doneLatch.countDown();
                         }
-                    }else {
-                        controller.updateData(null);
-                    }
-                } finally {
-                    doneLatch.countDown();
-                }
                     }
             );
             try {
