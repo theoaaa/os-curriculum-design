@@ -67,7 +67,7 @@ public class MemoryManage {
         // 更新界面显示
         if (controller != null)
             controller.updateMessage(processMemoryAllocatedList);
-        System.out.println("内存分配成功.");
+        //System.out.println("内存分配成功.");
         return true;
     }
 
@@ -124,7 +124,7 @@ public class MemoryManage {
             memory[i] = 0;
         }
         pcbMemory.remove(pcb);
-
+        //System.out.println("PCB个数"+processMemoryAllocatedList.size());
         // 更新界面显示
         if (controller != null)
             controller.updateMessage(processMemoryAllocatedList);
