@@ -11,6 +11,7 @@ public class Device {
     public Device(){
         this.isAllocated = false;
         this.remainTime = 0;
+        this.pcb = null;
     }
 
     public void setRemainTime(int remainTime) {

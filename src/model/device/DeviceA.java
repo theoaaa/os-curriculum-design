@@ -2,12 +2,11 @@ package model.device;
 
 public class DeviceA extends Device {
 
-    private String devieType;
+    private String deviceType;
 
     public DeviceA(){
         super();
-        super.isAllocated = false;
-        devieType = "A";
+        deviceType = "A";
     }
 
     @Override
@@ -16,7 +15,7 @@ public class DeviceA extends Device {
     }
 
     public String getDevieType(){
-        return devieType;
+        return deviceType;
     }
 
 }

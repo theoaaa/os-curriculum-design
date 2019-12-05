@@ -1,5 +1,6 @@
 package view.deviceManagement;
 
+import javafx.application.Platform;
 import model.processManege.PCB;
 import model.device.Device;
 import javafx.fxml.FXML;
@@ -18,6 +19,9 @@ public class DeviceManagementController {
     private static ArrayList<PCB> aWaitingList = new ArrayList<>();
     private static ArrayList<PCB> bWaitingList = new ArrayList<>();
     private static ArrayList<PCB> cWaitingList = new ArrayList<>();
+    private static StringBuilder context1 = new StringBuilder();
+    private static StringBuilder context2 = new StringBuilder();
+    private static StringBuilder context3 = new StringBuilder();
     @FXML TextField A01;
     @FXML TextField A02;
     @FXML TextField B01;
@@ -35,50 +39,84 @@ public class DeviceManagementController {
         cWaitingList = DeviceAllocation.getCWaitingList();
         deviceList = DeviceAllocation.getDeviceUsage();
         updateMessage();
+        updateWaiting();
     }
 
     // 初始化/更新数据
     public void updateMessage(){
 
-        // 显示正在使用的设备
-        if(deviceList.size() >= 7){
-            if (deviceList.get(0).getPcb() != null)
-                A01.setText(deviceList.get(0).getPcb().getProcessID()+"");
-            if (deviceList.get(1).getPcb() != null)
-                A02.setText(deviceList.get(1).getPcb().getProcessID()+"");
-            if (deviceList.get(2).getPcb() != null)
-                B01.setText(deviceList.get(2).getPcb().getProcessID()+"");
-            if (deviceList.get(3).getPcb() != null)
-                B02.setText(deviceList.get(3).getPcb().getProcessID()+"");
-            if (deviceList.get(4).getPcb() != null)
-                B03.setText(deviceList.get(4).getPcb().getProcessID()+"");
-            if (deviceList.get(5).getPcb() != null)
-                C01.setText(deviceList.get(5).getPcb().getProcessID()+"");
-            if (deviceList.get(6).getPcb() != null)
-                C02.setText(deviceList.get(6).getPcb().getProcessID()+"");
-            if (deviceList.get(7).getPcb() != null)
-                C03.setText(deviceList.get(7).getPcb().getProcessID()+"");
-        }
+        Platform.runLater(()->{
+            // 显示正在使用的设备
+            if(deviceList.size() >= 7){
+                if (deviceList.get(0).getPcb() != null){
+                    if (deviceList.get(0).getPcb().getProcessID()!=null)
+                        A01.setText(deviceList.get(0).getPcb().getProcessID()+" ");
+                    else A01.setText("");
+                }
+                else
+                    A01.setText("");
+                if (deviceList.get(1).getPcb() != null) {
+                    if (deviceList.get(1).getPcb().getProcessID() != null)
+                        A02.setText(deviceList.get(1).getPcb().getProcessID() + " ");
+                    else A02.setText("");
+                }
+                else
+                    A02.setText("");
+                if (deviceList.get(2).getPcb() != null)
+                    B01.setText(deviceList.get(2).getPcb().getProcessID()+" ");
+                else
+                    B01.setText("");
+                if (deviceList.get(3).getPcb() != null)
+                    B02.setText(deviceList.get(3).getPcb().getProcessID()+" ");
+                else
+                    B02.setText("");
+                if (deviceList.get(4).getPcb() != null)
+                    B03.setText(deviceList.get(4).getPcb().getProcessID()+" ");
+                else
+                    B03.setText("");
+                if (deviceList.get(5).getPcb() != null)
+                    C01.setText(deviceList.get(5).getPcb().getProcessID()+" ");
+                else
+                    C01.setText("");
+                if (deviceList.get(6).getPcb() != null)
+                    C02.setText(deviceList.get(6).getPcb().getProcessID()+" ");
+                else
+                    C02.setText("");
+                if (deviceList.get(7).getPcb() != null)
+                    C03.setText(deviceList.get(7).getPcb().getProcessID()+" ");
+                else
+                    C03.setText("");
+            }
+        });
+    }
+
+    public void updateWaiting(){
         // 显示等待队列中的进程
-        String context = "";
+        if (context1 != null)
+            context1.setLength(0);
         for(int i=0;i<aWaitingList.size();i++) {
+            System.out.println("大小："+aWaitingList.size());
             PCB p = aWaitingList.get(i);
-            context += p.getProcessID();
+            context1.append(p.getProcessID() + "      ");
         }
-        AWaitingList.setText(context);
-        context = "";
+        AWaitingList.setText(context1.toString());
+        if (context2 != null)
+            context2.setLength(0);
         for(int i=0;i<bWaitingList.size();i++) {
             PCB p = bWaitingList.get(i);
-            context += p.getProcessID();
+            context2.append(p.getProcessID() + "      ");
         }
-        BWaitingList.setText(context);
-        context = "";
+        BWaitingList.setText(context2.toString());
+        if (context3 != null)
+            context3.setLength(0);
         for(int i=0;i<cWaitingList.size();i++) {
             PCB p = cWaitingList.get(i);
-            context += p.getProcessID();
+            context3.append(p.getProcessID() + "      ");
         }
-        CWaitingList.setText(context);
+        CWaitingList.setText(context3.toString());
     }
+
+
     public void setAWaitingList(ArrayList<PCB> aWaitingList) {
         this.aWaitingList = aWaitingList;
     }

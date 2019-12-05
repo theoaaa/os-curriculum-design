@@ -25,6 +25,8 @@ public class StringUtil {
             case 3:
                 num = "C";
                 break;
+            default:
+                System.out.println("              "+id);
         }
         return num;
     }
